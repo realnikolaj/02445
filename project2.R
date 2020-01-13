@@ -1,4 +1,3 @@
-setwd("C:/Users/Bruger/OneDrive - Danmarks Tekniske Universitet/DTU/Statistical evaluation of aritifical intelligence/project_2/")
 load("fosfor_data.Rdata")
 #----with location 11----
 

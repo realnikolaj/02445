@@ -1,4 +1,3 @@
-setwd("C:/Users/Bruger/OneDrive - Danmarks Tekniske Universitet/DTU/Statistical evaluation of aritifical intelligence/project_1/")
 load("armdata.RData")
 
 exp2 <- armdata[2][[1]]
