@@ -1,0 +1,17 @@
+/*
+!*.Rdata
+!*.pdf
+!*.R
+!*.py
+!*.txt
+
+!.gitignore
+
+!/project1
+!/project2
+
+!/*/.Rdata
+!/*/.pdf
+!/*/.R
+!/*/.py
+!/*/.txt
