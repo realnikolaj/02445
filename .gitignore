@@ -6,6 +6,7 @@
 !*.txt
 !*.ipynb
 !*.npy
+!*.png
 
 !.gitignore
 
