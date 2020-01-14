@@ -4,6 +4,8 @@
 !*.R
 !*.py
 !*.txt
+!*.ipynb
+!*.npy
 
 !.gitignore
 
