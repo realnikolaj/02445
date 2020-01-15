@@ -16,17 +16,32 @@ plot(data[1,1,,][,2],data[1,1,,][,3])
 plot_ly(x=data[4,1,,][,1],y=data[4,1,,][,2],z = data[4,1,,][,3],type = "scatter3d")
 
 
-name_temp1<-"data/data"
-for (i in 1:10){
-  for (j in 1:10){
-    temp <- data[i,j,,]
-    name_temp2 <- paste(name_temp1,paste(i,j,sep="_"),sep="")
-    write.csv(temp,file=name_temp2)
-  }
-}
+# name_temp1<-"data/data"
+# for (i in 1:10){
+#   for (j in 1:10){
+#     temp <- data[i,j,,]
+#     name_temp2 <- paste(name_temp1,paste(i,j,sep="_"),sep="")
+#     write.csv(temp,file=name_temp2)
+#   }
+# }
 # data1 <- data[1,1,,]
 # write.csv(data1,file="data1.csv")
 # write(data1,file="data1.txt")
 # temp <- unlist(exp2)
 # 
 # write.csv(temp,file="data.csv")
+
+# ---- all experiments ----
+
+data <- array(data = NA,dim = c(16,100,100,3))
+for (i in 1:16){
+  counter = 0
+  for(j in 1:10){
+    for (k in 1:10){
+      data[i,counter,,] <- armdata[i][[1]][[j]][[k]]
+      counter = counter +1
+    }
+  }
+}
+
+

@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
+import tqdm
 
 if torch.cuda.is_available():
     print("The code will run on GPU. This is important so things run faster.")
@@ -99,7 +100,7 @@ train_acc_all = []
 
 batch_size=10
 
-for i in range(100):
+for i in tqdm.tqdm(range(100),unit="model"):
     test_idx = torch.tensor([i])
     train_idx = np.delete(np.arange(100),test_idx)
     data_test = data[test_idx]
