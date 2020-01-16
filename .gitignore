@@ -7,14 +7,7 @@
 !*.ipynb
 !*.npy
 !*.png
-
+!*.tex
+!*.Rmd
 !.gitignore
 
-!/project1
-!/project2
-
-!/*/.Rdata
-!/*/.pdf
-!/*/.R
-!/*/.py
-!/*/.txt

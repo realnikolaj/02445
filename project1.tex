@@ -1,0 +1,99 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage[english]{babel}
+\usepackage[margin=1.7in]{geometry}
+\bibliographystyle{unsrt}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subcaption}
+\usepackage{mathtools}
+
+
+\begin{document}
+\begin{titlepage}
+	
+	
+	\title{Project 1 \\ Course 02445 \\ Project in Statistical evaluation of \\ artificial intelligence }
+	\author{Rasmus J. P. s164564 \\ Nikolaj S. P. s183930}
+	\date{January 2020}
+	\maketitle
+\end{titlepage}
+
+
+\section{Clustering}
+
+
+\begin{equation}
+E=\sum_{i=1}^{N} \sum_{k=1}^{K} z_{i k}\left\|\boldsymbol{x}_{i}-\boldsymbol{\mu}_{k}\right\|_{2}^{2}
+\end{equation}
+\begin{equation}
+z_{i k} = \frac{1}{K}
+\end{equation}
+Notice how $z_{ik}$ and $\mu_{k}$ will change every time a cluster is updated.
+The formulae for K-means computes the sum of squares between each observation in a cluster to the cluster mean.
+Ward's method or Ward linkage compares the K-means error from any giving merger between two observation or clusters. Combination of two observations or clusters are then determined by the merger with lowest increase to the K-means error.
+Ward linkage then becomes the function that determines the agglomeration that creates the following dendrogram.
+%\begin{figure}[H]
+%	\includegraphics[width=\linewidth]{datasets/dendrogram.png}
+%	\caption{Agglomerative Hierarchical clustering - dendrogram showing observation along the horizontal axis. Dissimilarity between merging clusters/observations is found as the height of where the vertical lines connect two clusters/observations.}
+%	\label{fig:dendrogram}
+%\end{figure}
+
+
+
+
+%\begin{figure}[h]
+%	\centering
+%	\begin{subfigure}{.5\textwidth}
+%		\centering
+%		\includegraphics[width=\linewidth]{datasets/3_GMM2.png}
+%		\label{fig:density}
+%	\end{subfigure}%
+%	\begin{subfigure}{.5\textwidth}
+%		\centering
+%		\includegraphics[width=\linewidth]{datasets/3_GMM10.png}
+%		\label{fig:density10}
+%	\end{subfigure}
+%	\caption{Gaussian Mixture Model clusters for K=2 cluster (left pane) and K=10 cluster (right pane)}
+%	\label{fig:dens}
+%\end{figure}
+
+\begin{equation}\begin{array}{lll}
+		{\mu_{1}=\begin{bmatrix*}[r] -0.67 \\	0.78 \\	1.12 \\	-0.45 \\	-0.85 \\	1.18 \\	1.27 \\	0.6 \\ -0.8 \\ 	1.11 \\	1.23	\end{bmatrix*} \quad }
+		{\mu_{2}=\begin{bmatrix*}[r]0.33 \\	-0.39 \\	-0.56 \\	0.22 \\	0.42 \\	-0.59 \\	-0.63 \\ 	-0.3 \\ 	0.4 \\	-0.55 \\	-0.61
+				\end{bmatrix*} \quad }
+		{\mu_{6}=\begin{bmatrix*}[r] -1.36 \\	2.28	\\1.13 \\	-0.58 \\	-1.04 \\	1.66 \\	1.53 \\	0.8 \\-1.89 \\ 	1.15 \\	1.44 \\
+				\end{bmatrix*} \quad }
+			\end{array}
+\end{equation}
+
+\begin{equation}\begin{array}{lll}
+{\hat{\mu}_{1}=\begin{bmatrix*}[r]1.51	\\ 0.08
+		\end{bmatrix*} \quad }
+{\hat{\mu}_{2}=\begin{bmatrix*}[r]-3.16 \\	-0.17
+		\end{bmatrix*} \quad }
+{\hat{\mu}_{6}=\begin{bmatrix*}[r]-2.02 \\	3.45
+		\end{bmatrix*} \quad }
+\end{array}
+\end{equation}
+
+\subsection*{Evaluating clusters}
+We use Rand index to evaluate the clustering of our different methods. Specifically we will compare our true labels with the labels given by a model.
+We define two measures from our clustering:
+\begin{equation}
+S=\sum_{i=1}^{N-1} \sum_{j=i+1}^{N} S_{i j}
+\end{equation}
+\begin{equation}
+D=\sum_{i=1}^{N-1} \sum_{j=i+1}^{N} D_{i j}
+\end{equation}
+The notation requires some explanation. We difine two cluster Z (true) and Q (predicted). $S_{ij} = 1$ if and only if  Z and Q agrees that the pair of observation ${x_i,x_j}$ belong to the same cluster, otherwise $S_{ij} = 0$. Similar  $D_{ij} = 1$ only if Z and Q agrees that the pair of observation ${x_i,x_j}$ doesn't belong to the same cluster. 
+We then calculate the rand index like:
+\begin{equation}
+R(Q, P)=\frac{S+D}{\frac{1}{2} N(N-1)}
+\end{equation}
+
+
+\end{document}
