@@ -85,7 +85,9 @@ df <- data.frame(experiment,person,timestep,x,y,z)
 
 model <- lm(x+y+z~experiment,data=df)
 summary(model)
+anova(model)
+
 plot_ly(x=df$x,y=df$y,z=df$z,type="scatter3d")
 
 # save(df,file = "armDF.Rdata")
-
+load("armDF.Rdata")

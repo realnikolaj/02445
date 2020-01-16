@@ -22,8 +22,38 @@
 	\maketitle
 \end{titlepage}
 
+\section{Introduction}
 
-\section{Clustering}
+
+\section{Data}
+Something general about the data
+
+Person 9 is missing some of the initial 1-4 datapoints for some of the experiments (not experiment 2), 
+we impute the values with the first available datapoints, such that the first 1-5 datapoints are the same for those particular observation. This seems reasonable since it is only a few datapoints and they are located at the beginning of the observation, thus it is equivalent to the person starting from that position and holding it there for the first few measurements.
+
+\section{Method}
+\subsection{Artificial Neural Network}
+We decided to use an ANN because of the high dimensionality of the data, with one observation being describe by a 300 dimensional vector.
+A classification network was trained to classify a person from the curve created by their movement in experiment 2. Several architectures where trained to find the best suited architecture for the task, in the end we decided on this particular architecture:
+
+\begin{tabular}[H]{c l @{} l}
+\centering
+Layer no.       &
+\multicolumn{2}{c}{Function} \\
+\hline
+Layer 1     & linear(300, 150) \\
+            & ReLU \\
+            & Dropout(0.15) \\
+Layer 2     & linear(150, 75) \\ 
+            & ReLU \\
+            & Dropout(0.15) \\
+Layer 3     & linear(75, 10) \\ 
+Layer 4     & Softmax\\ 
+\end{tabular}\\ 
+
+\noindent A leave one out cross-validation was then performed on the network, to estimate it's generalization error.
+
+\subsection{Clustering}
 
 
 \begin{equation}
