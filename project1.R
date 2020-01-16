@@ -1,6 +1,28 @@
 library("e1071")
 library(plotly)
+library(rlist)
 load("armdata.RData")
+missing_data <- 0
+missing_idx <- list()
+for(i in 1:16){
+  for(j in 1:10){
+    for(k in 1:10){
+      if (sum(is.na(armdata[[i]][[j]][[k]])) >= 1){
+        missing_idx <- list.append(missing_idx,c(i,j,k))
+        missing_data <- missing_data + sum(is.na(armdata[[i]][[j]][[k]]))
+      }
+    }
+  }
+}
+for(i in 1:length(missing_idx)){
+  for(j in 1:5){
+    if(sum(is.na(armdata[[missing_idx[[i]][1]]][[missing_idx[[i]][2]]][[missing_idx[[i]][3]]][j,]))<3){
+      for(k in 1:j){
+        armdata[[missing_idx[[i]][1]]][[missing_idx[[i]][2]]][[missing_idx[[i]][3]]][k,] <- armdata[[missing_idx[[i]][1]]][[missing_idx[[i]][2]]][[missing_idx[[i]][3]]][j,]
+      }
+    }
+  }
+}
 
 # exp2 <- armdata[2][[1]]
 # 
@@ -33,17 +55,6 @@ load("armdata.RData")
 
 # ---- all experiments ----
 
-data <- array(data = NA,dim = c(16,100,100,3))
-for (i in 1:16){
-  counter = 0
-  for(j in 1:10){
-    for (k in 1:10){
-      data[i,counter,,] <- armdata[i][[1]][[j]][[k]]
-      counter = counter +1
-    }
-  }
-}
-
 # experiment <- as.factor(c(rep(1,100),rep(2,100),rep(3,100),rep(4,100),rep(5,100),rep(6,100),rep(7,100),rep(8,100),rep(9,100),rep(10,100),rep(11,100),rep(12,100),rep(13,100),rep(14,100),rep(15,100),rep(16,100)))
 # person <- as.factor(rep(c(rep(1,10),rep(2,10),rep(3,10),rep(4,10),rep(5,10),rep(6,10),rep(7,10),rep(8,10),rep(9,10),rep(10,10)),16))
 x <- list()
@@ -51,24 +62,30 @@ y <- list()
 z <- list()
 counter = 1
 for(i in 1:16){
-  for(j in 1:100){
-    x[[counter]] <- data[i,j,,1]
-    y[[counter]] <- data[i,j,,2]
-    z[[counter]] <- data[i,j,,3]
+  for(j in 1:10){
+    for(k in 1:10){
+    x[[counter]] <- armdata[[i]][[j]][[k]][,1]
+    y[[counter]] <- armdata[[i]][[j]][[k]][,2]
+    z[[counter]] <- armdata[[i]][[j]][[k]][,3]
     counter = counter + 1
-}}
+}}}
 
 # df <- data.frame(experiment,person,I(x),I(y),I(z))
+
+x <- unlist(x)
+y <- unlist(y)
+z <- unlist(z)
 
 experiment <- as.factor(c(rep(1,100*100),rep(2,100*100),rep(3,100*100),rep(4,100*100),rep(5,100*100),rep(6,100*100),rep(7,100*100),rep(8,100*100),rep(9,100*100),rep(10,100*100),rep(11,100*100),rep(12,100*100),rep(13,100*100),rep(14,100*100),rep(15,100*100),rep(16,100*100)))
 person <- as.factor(rep(c(rep(1,10*100),rep(2,10*100),rep(3,10*100),rep(4,10*100),rep(5,10*100),rep(6,10*100),rep(7,10*100),rep(8,10*100),rep(9,10*100),rep(10,10*100)),16))
 timestep <- as.factor(rep(c(1:100),16*10*10))
-x <- unlist(x)
-y <- unlist(y)
-z <- unlist(z)
+
 
 df <- data.frame(experiment,person,timestep,x,y,z)
 
 model <- lm(x+y+z~experiment,data=df)
 summary(model)
-plot(df$x,df$y)
+plot_ly(x=df$x,y=df$y,z=df$z,type="scatter3d")
+
+# save(df,file = "armDF.Rdata")
+
