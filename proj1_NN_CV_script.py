@@ -125,5 +125,5 @@ for i in tqdm.tqdm(range(100),unit="model"):
 test_acc_final = np.array(test_acc_all)
 train_acc_final = np.array(train_acc_all)
 
-np.save("test_acc_final",test_acc_final)
-np.save("train_acc_final",train_acc_final)
+np.save("test_acc_final5",test_acc_final)
+np.save("train_acc_final5",train_acc_final)
