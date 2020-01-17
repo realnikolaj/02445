@@ -5,6 +5,9 @@ Phosphorous$location <- as.factor(Phosphorous$location)
 Phosphorous$yield[34] <-(Phosphorous$yield[33]+Phosphorous$yield[35])/2
 Phosphorous$yield[36] <-(Phosphorous$yield[33]+Phosphorous$yield[35])/2
 
+model <- lm(DGT~location,data = Phosphorous)
+summary(model)
+
 plot(Phosphorous$location,Phosphorous$yield,
      ylab = "Yield [100kg/ha]",
      xlab = "Field",
@@ -36,11 +39,28 @@ plot(Phosphorous$DGT,Phosphorous$yield,
      xlab = "Bioavailable phosphorous [µg/L]",
      main = "Michaelis-Menten model for DGT")
 lines(x.DGT,fit_model_DGT)
+plot(resid(phos.DGT.model))
+confint(phos.DGT.model)
+
+#leave one out cross-validation of Michaelis-Menten model on DGT
+DGT.error <- rep(0,36)
+for(i in 1:36){
+train <- Phosphorous[-i,]
+test <- Phosphorous[i,]
+DGT.model <- nls(yield ~ alfa * DGT/(beta + DGT) , data = train,
+                      start = list(alfa = 90 , beta = 1))
+estimate <- predict(DGT.model,test)
+DGT.error[i] <- (test$yield-estimate)^2
+}
+DGT.rmse <- sqrt(mean(DGT.error))
+
 
 #Michaelis-Menten model for Olsen-P
 phos.olsen.model <- nls(yield ~ alfa * olsenP/(beta + olsenP) , data = Phosphorous,
                   start = list(alfa = 90 , beta = 1))
 summary(phos.olsen.model)
+
+
 
 fit_model_olsen<- coef(phos.olsen.model)[1]*x.olsen/(coef(phos.olsen.model)[2]+x.olsen)
 plot(Phosphorous$olsenP,Phosphorous$yield,
@@ -49,6 +69,31 @@ plot(Phosphorous$olsenP,Phosphorous$yield,
      main = "Michaelis-Menten model for Olsen-P")
 lines(x.olsen,fit_model_olsen)
 
+temp <- confint(phos.olsen.model)
+
+plot(resid(phos.DGT.model))
+
+#leave one out cross-validation of Michaelis-Menten model on Olsen-P
+olsenP.error <- rep(0,36)
+for(i in 1:36){
+        train <- Phosphorous[-i,]
+        test <- Phosphorous[i,]
+        DGT.model <- nls(yield ~ alfa * olsenP/(beta + olsenP) , data = train,
+                         start = list(alfa = 90 , beta = 1))
+        estimate <- predict(DGT.model,test)
+        olsenP.error[i] <- (test$yield-estimate)^2
+}
+olsenP.rmse <- sqrt(mean(olsenP.error))
+
+plot(Phosphorous$olsenP,olsenP.error)
+
+plot(Phosphorous$DGT,DGT.error)
+
+cor(olsenP.error,Phosphorous$olsenP)
+
+cor(DGT.error,Phosphorous$DGT)
+
+wilcox.test(olsenP.error,DGT.error)
 
 olsen.lm <- lm(yield ~ olsenP,data=Phosphorous)
 summary(olsen.lm)
@@ -72,50 +117,3 @@ plot(Phosphorous$DGT,Phosphorous$yield,
      xlab = "Bioavailable phosphorous [µg/L]",
      main = "Linear model for DGT")
 lines(x.DGT,fit.DGT.lm)
-
-#----without location 11----
-
-# Phosphorous2 <- Phosphorous[-c(33,34,35,36),]
-# 
-# plot(Phosphorous2$location,Phosphorous2$yield)
-# plot(Phosphorous2$DGT,Phosphorous2$yield)
-# plot(Phosphorous2$olsenP,Phosphorous2$yield)
-# 
-# x.DGT2 <- seq(min(Phosphorous2$DGT),max(Phosphorous2$DGT),length=100)
-# x.olsen2 <- seq(min(Phosphorous2$olsenP),max(Phosphorous2$olsenP),length=100)
-# 
-# 
-# phos2.DGT.model <- nls(yield ~ alfa * DGT/(beta + DGT) , data = Phosphorous2,
-#                       start = list(alfa = 90 , beta = 1))
-# summary(phos2.DGT.model)
-# 
-# fit_model_DGT2<- coef(phos2.DGT.model)[1]*x.DGT2/(coef(phos2.DGT.model)[2]+x.DGT2)
-# plot(Phosphorous2$DGT,Phosphorous2$yield)
-# lines(x.DGT2,fit_model_DGT2)
-# 
-# 
-# phos2.olsen.model <- nls(yield ~ alfa * olsenP/(beta + olsenP) , data = Phosphorous2,
-#                         start = list(alfa = 90 , beta = 1))
-# summary(phos2.olsen.model)
-# 
-# fit_model_olsen2<- coef(phos2.olsen.model)[1]*x.olsen2/(coef(phos2.olsen.model)[2]+x.olsen2)
-# plot(Phosphorous2$olsenP,Phosphorous2$yield)
-# lines(x.olsen2,fit_model_olsen2)
-# 
-# 
-# olsen.lm2 <- lm(yield ~ olsenP,data=Phosphorous2)
-# summary(olsen.lm2)
-# anova(olsen.lm2)
-# 
-# fit.olsen.lm2<- coef(olsen.lm2)[1]+coef(olsen.lm2)[2]*x.olsen2
-# plot(Phosphorous2$olsenP,Phosphorous2$yield)
-# lines(x.olsen2,fit.olsen.lm2)
-# 
-# 
-# DGT.lm2 <- lm(yield ~ DGT,data=Phosphorous2)
-# summary(DGT.lm2)
-# anova(DGT.lm2)
-# 
-# fit.DGT.lm2<- coef(DGT.lm2)[1]+coef(DGT.lm2)[2]*x.DGT2
-# plot(Phosphorous2$DGT,Phosphorous2$yield)
-# lines(x.DGT2,fit.DGT.lm2)
