@@ -125,5 +125,20 @@ We then calculate the rand index like:
 R(Q, P)=\frac{S+D}{\frac{1}{2} N(N-1)}
 \end{equation}
 
+\section{Results}
+
+Neural network
+
+With leave-one out cross-validation the estimated accuracy is 71\% with a 95\% confidence interval of  [79.9\% , 62.1\%]
+
+\begin{table}[H]
+\begin{tabular}{lllllllllll}
+\hline
+\textbf{Person}   & 1                        & 2                        & 3    & 4    & 5     & 6    & 7    & 8    & 9    & 10   \\ \hline
+\textbf{Accuracy} & \multicolumn{1}{c}{50\%} & \multicolumn{1}{c}{60\%} & 60\% & 80\% & 100\% & 80\% & 70\% & 80\% & 70\% & 60\% \\ \hline
+\end{tabular}
+\caption{Neural network, Accuracy on each person}
+\label{tab:nn}
+\end{table}
 
 \end{document}
