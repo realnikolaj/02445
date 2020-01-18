@@ -1,0 +1,60 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(Hotelling)
+load("obs.RData")
+```
+***Make 16 covariance matrices***
+```{r}
+# Mcov = array(data = NA, dim=c(16,300,300))
+# Means = array(data = NA, dim=c(16,300))
+# stdDev = array(data = NA, dim=c(16,300))
+# 
+# for (i in 0:15){
+#   Mcov[i,,] = cov(obs[((i*100)+1):((i*100)+100),])
+#   Means[i,] = mean(obs[((i*100)+1):((i*100)+100),])
+#   stdDev[i,] = sd(obs[((i*100)+1):((i*100)+100),])
+# }
+```
+
+***Hotelling's two-sampled t-squared test for comparing difference in multivaraite means***
+```{r}
+set.seed(42)
+idx = sample(ncol(obs), 9)
+t2 = hotelling.test(obs[1:10,idx], obs[31:40,idx])
+# t2 = hotelling.test(obs[1:100,idx], obs[401:500,idx])
+t2$stats
+t2$pval
+```
+***All tests***
+```{r}
+pArr = array(data = NA, dim=c(128))
+
+
+for (i in 0:15){
+  count = 1
+  print(i)
+  for (j in 1:16){
+
+    
+    if (j+1 == i+1){
+      next
+    }
+    print(j)
+    count = count+1
+    t2 = hotelling.test(obs[((i*100)+1):((i*100)+100),idx],
+                          obs[((j*100)+1):((j*100)+100),idx])
+    pArr[(count-1)] = t2$pval
+}
+  
+}
+
+t2 = hotelling.test(obs[1:100,idx], obs[401:500,idx])
+summary(t2)
+
+```
+
