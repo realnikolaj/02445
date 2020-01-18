@@ -67,7 +67,7 @@ Leave one out Cross validation LOOCV was performed on both models and their perf
 
 
 \subsection{Testing for influence}
-When testing for influence of experiments on the curves we choose a  generalized version of the two-sampled Student's t-test namely the t-squared-test. Thus we propose a null-hypothesis that the mean of the different trajectories are the same. The t-squared test generalizes to multiple dimensions making it a perfect statistics for our 300 dimensional means. With the t-squared test we can handle independent multivariate normal distributions by calculating the mean and standard deviation of the one 100 repetitions in each experiment and finally compare all possible sets of two experiments. This method require some further explanation which we have briefly provided in the appendix.
+When testing for influence of experiments on the curves we choose a  generalized version of the two-sampled Student's t-test namely the t-squared-test. Thus we propose a null-hypothesis that the mean of the different trajectories are the same. The t-squared test generalizes to multiple dimensions making it a perfect statistics for our 300 dimensional means. With the t-squared test we can handle independent multivariate normal distributions by calculating the mean and standard deviation of the one 100 repetitions in each experiment and finally compare all possible sets of two experiments. This statistics deserves its own explanation which we briefly provide in the appendix.
 
 \begin{equation}
 E=\sum_{i=1}^{N} \sum_{k=1}^{K} z_{i k}\left\|\boldsymbol{x}_{i}-\boldsymbol{\mu}_{k}\right\|_{2}^{2}
