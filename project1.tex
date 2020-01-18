@@ -20,22 +20,30 @@
 	\author{Rasmus J. P. s164564 \\ Nikolaj S. P. s183930}
 	\date{January 2020}
 	\maketitle
+	
+\subsection*{Summary}
+Classifying trajectories is a complex problem with many dimensions. In this report we will attempt to classify trajectories with two different machine learning [ML] models, a neural network NN and an unsupervised clustering algorithm. We evaluated the model performance on how well they classified the trajectories and subsequently predicted which test-subject performed said trajectory and compared the performance of both models statistically. We conclude that there is not a significant difference in the performance between our neural network and the unsupervised clustering model  ... \textit{[conclusion \& results ]} ... In addition we analyzed 16 different experiments and their resulting trajectories and tested whether there was a significant effect of experiment on trajectories.  By using a multivariate test-statistics for high dimensional data we are able to conclude that different experiments results in different trajectories this with a signifance level of <1\%, we obtained a p-value for this very statistics on [result].
+
 \end{titlepage}
 
 \section{Introduction}
+Solving complex problems has been the main drive for development in computer science and the computers has by far overceeded the humans on complex problems such as playing a game of chess or predicting the weather but only because we have been able to present them models simulating the real world for which the computer can react upon. So how do we model the real world? There are many answers, some complicated and some simple. We will be looking at trajectory data from 10 different test-subjects each performing 16 different experiments, repeated 10 times. Each experiment share the same underlying task with slight variation to it. The task for the test-subjects was that they had to move an arbitrary cylinder over another cylinder. The experiments varied between different obstacle and obstacle positions. \\ Our first aim is to classify the unique trajectories from the resulting 1600 observations and evaluate the performance of our two classifiers and compare their mean squared error using two-sampled t-test. The second aim is to look for a significant effect from the experiments on the trajectories also here we will be using a form of t-test but since we are now looking at a trajectory as a whole we must use a test-statistic which takes the dimensionality into considerations, we end up comparing trajectories by using a generalized form of the Student's t-statistic named Hotelling's t-squared statistics t2 which generalizes to p-dimensionality.
 
 
 \section{Data}
-Something general about the data
+The trajectory data was recorded in 3 dimensions using a motion capture camera, resulting in three continuous variables x,y and z, furthermore the data included information about which person performed the motion, in which repetition the motion was captured and which experiments was performed thus giving us three categorical variables. \\ Each trajectory observation contains 100 recordings of said coordinates - see figure TRAJ.
+A computer doesn't observe data like humans, so we decided to transform the motion data from 3 x 100 observations to 1 x 300, effectively stacking 300 coordinates along one vector.
 
 Person 9 is missing some of the initial 1-4 datapoints for some of the experiments (not experiment 2), 
 we impute the values with the first available datapoints, such that the first 1-5 datapoints are the same for those particular observation. This seems reasonable since it is only a few datapoints and they are located at the beginning of the observation, thus it is equivalent to the person starting from that position and holding it there for the first few measurements.
 
-\section{Method}
-\subsection{Artificial Neural Network}
-We decided to use an ANN because of the high dimensionality of the data, with one observation being describe by a 300 dimensional vector.
-A classification network was trained to classify a person from the curve created by their movement in experiment 2. Several architectures where trained to find the best suited architecture for the task, in the end we decided on this particular architecture:
+Include a few plots - TRAJ, variance between curves (boxplots), 
 
+\section{Classifiers}
+In classifying persons from the trajectories we hypothesis that the performance of both ML models are equal and use a t-test for a two-sampled comparison of means. A brief description of both models follows and the reasoning behind choosing these excact models follows.
+Several versions of ANNs where trained to find the  architecture best suited for the task. We decided to use an ANN because of their already established performance in high dimensional space. The classification network was trained to classify a person from the 1 x 300 long vector of motion data.   
+
+Send to appendix:
 \begin{tabular}[H]{c l @{} l}
 \centering
 Layer no.       &
@@ -51,10 +59,15 @@ Layer 3     & linear(75, 10) \\
 Layer 4     & Softmax\\ 
 \end{tabular}\\ 
 
-\noindent A leave one out cross-validation was then performed on the network, to estimate it's generalization error.
 
-\subsection{Clustering}
+The second model is an unsupervised clustering model using the K-Nearest-Kneighbor KNN algorithm. This model knows not about which repetition, person or which experiment was performed it is only given the vector of 300 dimensions. 
+The KNN was choosen because of its simplicity and because it's very cheap computationally compared to other models such as the NN.
 
+Leave one out Cross validation LOOCV was performed on both models and their performance evaluated with the zero-one loss function.
+
+
+\subsection{Testing for influence}
+When testing for influence of experiments on the curves we choose a  generalized version of the two-sampled Student's t-test namely the t-squared-test. Thus we propose a null-hypothesis that the mean of the different trajectories are the same. The t-squared test generalizes to multiple dimensions making it a perfect statistics for our 300 dimensional means. With the t-squared test we can handle independent multivariate normal distributions by calculating the mean and standard deviation of the one 100 repetitions in each experiment and finally compare all possible sets of two experiments. This method require some further explanation which we have briefly provided in the appendix.
 
 \begin{equation}
 E=\sum_{i=1}^{N} \sum_{k=1}^{K} z_{i k}\left\|\boldsymbol{x}_{i}-\boldsymbol{\mu}_{k}\right\|_{2}^{2}
