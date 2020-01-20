@@ -11,7 +11,7 @@
 \usepackage{amssymb}
 \usepackage{subcaption}
 \usepackage{mathtools}
-
+\usepackage{tabularx,ragged2e,booktabs,caption,sidecap,subcaption,graphicx,tikz}
 
 \begin{document}
 \begin{titlepage}
@@ -72,6 +72,27 @@ In table \ref{tab:linear-nonlinear} we present our summed statistical analysis o
 	content...
 \end{table}
 
+\begin{table}[]
+\begin{tabular}{lcccc}\toprule [1.5pt]
+\textbf{Model}                & \multicolumn{1}{l}{\textbf{Linear DGT}} & \multicolumn{1}{l}{\textbf{Linear Olsen-P}} & \multicolumn{1}{l}{\textbf{Non-linear DGT}}  & \multicolumn{1}{l}{\textbf{Non-linear Olsen-P}}         \\ \midrule
+\textbf{R-squared} & 0.2702         & 0.1542             &              &               \\\midrule
+\textbf{p-values}   & DGT = 0.000685       & Olsen-P = 0.0103      & \begin{tabular}[c]{@{}c@{}}Alpha = 2e-16\\ Beta = 0.0014\end{tabular} & \begin{tabular}[c]{@{}c@{}}Alpha = 1e-9\\ Beta = 0.0432\end{tabular}\\
+\bottomrule[1.25pt]
+\end{tabular}
+\end{table}
+
+\begin{table}[]
+\begin{tabular}{lccc}\toprule[1.5pt]
+\textbf{Paired t-test between:}                          & \multicolumn{1}{l}{\textbf{t-statistic}} & \multicolumn{1}{l}{\textbf{df}} & \multicolumn{1}{l}{\textbf{p-values}} \\\midrule
+\textbf{Non-Linear DGT - Non-linear Olsen-P} & -2.694                                   & 35                              & 0.011                                 \\\midrule
+\textbf{Non-Linear DGT - Linear Olsen-P}     & -2.481                                   & 35                              & 0.018                                 \\\midrule
+\textbf{Non-Linear DGT - Linear DGT}         & -2.381                                   & 35                              & 0.023                                 \\\midrule
+\textbf{Linear DGT - Linear Olsen-P}         & -1.874                                   & 35                              & 0.069                                 \\\midrule
+\textbf{Linear DGT - Non-linear Olsen-P}     & -1.590                                   & 35                              & 0.12                                  \\\midrule
+\textbf{Linear Olsen-P - Non-linear Olsen-P} & 0.3065                                   & 35                              & 0.76                      \\
+\bottomrule[1.25pt]           
+\end{tabular}
+\end{table}
 
 Comparing each model to one another with CV and identical folds i.e. LOO-, we arrive at the tabled data in table \ref{tab:BAPcompare}.
 
