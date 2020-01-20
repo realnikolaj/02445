@@ -5,27 +5,34 @@ output: html_notebook
 
 
 ```{r}
-library(Hotelling)
+library("Hotelling")
+library("MVN")
 load("obs.RData")
 ```
-***Make 16 covariance matrices***
+***PCA***
 ```{r}
-# Mcov = array(data = NA, dim=c(16,300,300))
-# Means = array(data = NA, dim=c(16,300))
-# stdDev = array(data = NA, dim=c(16,300))
-# 
-# for (i in 0:15){
-#   Mcov[i,,] = cov(obs[((i*100)+1):((i*100)+100),])
-#   Means[i,] = mean(obs[((i*100)+1):((i*100)+100),])
-#   stdDev[i,] = sd(obs[((i*100)+1):((i*100)+100),])
-# }
+mean.obs = rbind(colMeans(obs[1:10,]),colMeans(obs[11:20,]),colMeans(obs[21:30,]),colMeans(obs[31:40,]),colMeans(obs[41:50,]),colMeans(obs[51:60,]),colMeans(obs[61:70,]),colMeans(obs[71:80,]),colMeans(obs[81:90,]),colMeans(obs[91:100,]))
+
+# PCA = prcomp(obs[1:100,], center = TRUE, scale = TRUE, retx = TRUE)
+PCA = prcomp(obs)
+Mrot = PCA$rotation
+dim(Mrot)
+rotx = PCA$x
+dim(rotx)
+varEx = PCA$sdev
+cs = cumsum(varEx/sum(varEx))
+idx = 100-length(cs[cs > 0.95])
+
+plot(cs)
+abline(v = idx)
 ```
+
+
+
 
 ***Hotelling's two-sampled t-squared test for comparing difference in multivaraite means***
 ```{r}
-set.seed(42)
-idx = sample(ncol(obs), 9)
-t2 = hotelling.test(obs[1:10,idx], obs[31:40,idx])
+t2 = hotelling.test(rotx[,1:9], rotx[,1:9])
 # t2 = hotelling.test(obs[1:100,idx], obs[401:500,idx])
 t2$stats
 t2$pval
