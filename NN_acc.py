@@ -27,3 +27,4 @@ sigma = np.std(est_acc)
 
 
 CI = [mu+1.96*sigma/np.sqrt(30),mu-1.96*sigma/np.sqrt(30)]
+

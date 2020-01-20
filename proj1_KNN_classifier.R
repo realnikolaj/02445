@@ -29,7 +29,6 @@ NN_est <- read.delim("NN_est_acc.txt",header=F)
 
 NN_est = NN_est/100
 
-sd(NN_est)
 temp <- rep(0,30)
 for(i in 1:30){
   temp[i] <- NN_est[[1]][i]
