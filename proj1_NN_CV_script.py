@@ -6,11 +6,12 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import tqdm
 
-if torch.cuda.is_available():
-    print("The code will run on GPU. This is important so things run faster.")
-else:
-    print("The code will run on CPU. You should probably not do this.")
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+#if torch.cuda.is_available():
+#    print("The code will run on GPU. This is important so things run faster.")
+#else:
+#    print("The code will run on CPU. You should probably not do this.")
+#device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = "cpu"
 
 class dataset:
     def __init__(self,data,target):
@@ -94,36 +95,36 @@ target = [0]*10+[1]*10+[2]*10+[3]*10+[4]*10+[5]*10+[6]*10+[7]*10+[8]*10+[9]*10
 target = np.array(target)
 data = torch.from_numpy(data).float()
 target = torch.from_numpy(target).long()
-
-test_acc_all = []
-train_acc_all = []
-
 batch_size=10
 
-for i in tqdm.tqdm(range(100),unit="model"):
-    test_idx = torch.tensor([i])
-    train_idx = np.delete(np.arange(100),test_idx)
-    data_test = data[test_idx]
-    data_train = data[train_idx]
-    target_test = target[test_idx]
-    target_train = target[train_idx]
+for j in tqdm.tqdm(range(20),unit="cross-validation"):
+    test_acc_all = []
+    train_acc_all = []
 
-    trainset = dataset(data_train,target_train)
-    testset = dataset(data_test,target_test)
-
-    train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=0)
-    test_loader = DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=0)
+    for i in tqdm.tqdm(range(100),unit="model"):
+        test_idx = torch.tensor([i])
+        train_idx = np.delete(np.arange(100),test_idx)
+        data_test = data[test_idx]
+        data_train = data[train_idx]
+        target_test = target[test_idx]
+        target_train = target[train_idx]
     
-    model = LinearNet(p=0.15)
-    model.to(device)
-    lr = 1e-4
-    optimizer = optim.Adam(model.parameters(), lr=lr)
-    test_acc, train_acc = train(model, optimizer,num_epochs=650)
-    test_acc_all.append(test_acc)
-    train_acc_all.append(train_acc)
+        trainset = dataset(data_train,target_train)
+        testset = dataset(data_test,target_test)
     
-test_acc_final = np.array(test_acc_all)
-train_acc_final = np.array(train_acc_all)
-
-np.save("test_acc_final5",test_acc_final)
-np.save("train_acc_final5",train_acc_final)
+        train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=0)
+        test_loader = DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=0)
+        
+        model = LinearNet(p=0.15)
+        model.to(device)
+        lr = 1e-4
+        optimizer = optim.Adam(model.parameters(), lr=lr)
+        test_acc, train_acc = train(model, optimizer,num_epochs=650)
+        test_acc_all.append(test_acc)
+        train_acc_all.append(train_acc)
+        
+    test_acc_final = np.array(test_acc_all)
+    train_acc_final = np.array(train_acc_all)
+    
+    np.save("test_acc_final{}".format(5+j),test_acc_final)
+    np.save("train_acc_final{}".format(5+j),train_acc_final)
