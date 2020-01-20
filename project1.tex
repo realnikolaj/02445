@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{float}
 \usepackage{graphicx}
+\usepackage{xcolor, soul}
 \usepackage[english]{babel}
 \usepackage[margin=1.7in]{geometry}
 \bibliographystyle{unsrt}
@@ -37,11 +38,15 @@ A computer doesn't observe data like humans, so we decided to transform the moti
 Person 9 is missing some of the initial 1-4 datapoints for some of the experiments (not experiment 2), 
 we impute the values with the first available datapoints, such that the first 1-5 datapoints are the same for those particular observation. This seems reasonable since it is only a few datapoints and they are located at the beginning of the observation, thus it is equivalent to the person starting from that position and holding it there for the first few measurements.
 
-Include a few plots - TRAJ, variance between curves (boxplots), 
+Include a few plots - (Distribution of curves HOW?)
+TRAJ, variance between curves (boxplots), 
 
-\section{Classifiers}
-In classifying persons from the trajectories we hypothesis that the performance of both ML models are equal and use a t-test for a two-sampled comparison of means. A brief description of both models follows and the reasoning behind choosing these excact models follows.
-Several versions of ANNs where trained to find the  architecture best suited for the task. We decided to use an ANN because of their already established performance in high dimensional space. The classification network was trained to classify a person from the 1 x 300 long vector of motion data.   
+\section{Comparing classifiers}
+We decided to compare two vastly different machine learning models, an ANN and i KNN, by running them multiple times and comparing the mean of our performance measure within each model. We ran each model 30 times and by doing so recording 30 independent and identically distributed random variables for each model. Central limit theorem then tells us that these random variables will follow an approximate normal distribution and because of this fact we will be able to compare the two models by comparing the mean of their performance in a two-sampled Student's t-test.
+
+We propose the null-hypothesis \fcolorbox{gray}{gray}{$H_{0}$: The difference in the means is zero}. 
+\subsection{Model A}
+We experimented with several versions of ANNs to find the  architecture best suited for the task. We decided to use an ANN because of their already established performance in high dimensional space. The classification network was trained to classify a person from the 1 x 300 long vector of motion data.   
 
 Send to appendix:
 \begin{tabular}[H]{c l @{} l}
@@ -59,33 +64,24 @@ Layer 3     & linear(75, 10) \\
 Layer 4     & Softmax\\ 
 \end{tabular}\\ 
 
-
-The second model is an unsupervised clustering model using the K-Nearest-Kneighbor KNN algorithm. This model knows not about which repetition, person or which experiment was performed it is only given the vector of 300 dimensions. 
+\subsection{Model B}
+The second model was a clustering model using the K-Nearest-Kneighbor KNN algorithm, also this model was trained on the same 1 x 300 motion vector.
 The KNN was choosen because of its simplicity and because it's very cheap computationally compared to other models such as the NN.
-
-Leave one out Cross validation LOOCV was performed on both models and their performance evaluated with the zero-one loss function.
-
-
-\subsection{Testing for influence}
-When testing for influence of experiments on the curves we choose a  generalized version of the two-sampled Student's t-test namely the t-squared-test. Thus we propose a null-hypothesis that the mean of the different trajectories are the same. The t-squared test generalizes to multiple dimensions making it a perfect statistics for our 300 dimensional means. With the t-squared test we can handle independent multivariate normal distributions by calculating the mean and standard deviation of the one 100 repetitions in each experiment and finally compare all possible sets of two experiments. This statistics deserves its own explanation which we briefly provide in the appendix.
-
-\begin{equation}
-E=\sum_{i=1}^{N} \sum_{k=1}^{K} z_{i k}\left\|\boldsymbol{x}_{i}-\boldsymbol{\mu}_{k}\right\|_{2}^{2}
-\end{equation}
-\begin{equation}
-z_{i k} = \frac{1}{K}
-\end{equation}
-Notice how $z_{ik}$ and $\mu_{k}$ will change every time a cluster is updated.
-The formulae for K-means computes the sum of squares between each observation in a cluster to the cluster mean.
-Ward's method or Ward linkage compares the K-means error from any giving merger between two observation or clusters. Combination of two observations or clusters are then determined by the merger with lowest increase to the K-means error.
-Ward linkage then becomes the function that determines the agglomeration that creates the following dendrogram.
-%\begin{figure}[H]
-%	\includegraphics[width=\linewidth]{datasets/dendrogram.png}
-%	\caption{Agglomerative Hierarchical clustering - dendrogram showing observation along the horizontal axis. Dissimilarity between merging clusters/observations is found as the height of where the vertical lines connect two clusters/observations.}
-%	\label{fig:dendrogram}
-%\end{figure}
+\\
+Leave one out Cross Validation LOOCV was performed on both models and their performance evaluated with the zero-one loss function suitable for classification problems. NOTE: Might consider another. \hl{SVM hinge loss, TOP-k ... because multiclass}.
 
 
+
+\section{Testing the for experimental influence}
+We decided on a test statistic of difference between experiments. If the experiment were to have a significant influence on the resulting trajectories, they should all be significantly different from one-another. The multiple test statistics to asses is then a collection of 128 comparisons between each and all experiments from which we will make our conclusion upon.\\ This raises two points of interest concerning our data:
+1. Can the distribution of the repititons withing experiments be considered multivariate \textbf{normal}?
+2. Having only 100 observations per experiment we are limited to less than 100 explaining variables "Insert a reason here".
+
+A solution for the second concern is to reduce the dimensionallity by performing principal component analysis PCA and choosing the number of principal components PC's by analyzing the resulting decompisition matrix i.e variance explained. But first we must solve the  multivariate normal assumption. \\
+ We have enough observations to assume normal distribution but we should only do this within single test subjects. Within each test subject we only have 10 observations per experiment. Luckely 10 observations is still enough for the mean of a single test-subjects trajectories to be considered normally distributed. \\ The solution to the first point then becomes to collect 10 means, one from each test subject withing each experiment but we've just limited ourselves to a maximum of nine explaining variables down from 300 \hl{have we???, see later highlight}. \\
+ Fortunately performing PCA returns a 63 vs 95\% ..see highlighted note.. variance explained by only 9 PC's. \hl{What to do, can we use just the 10 means to compute PCA on? Then we can have more variance explained by fewer variables. The reason for all this trickery is that mvn (R) will not consider the 300 dimensional observations to be multivariate normally distributed, it will though significantly contribute most variable to be univarite normal. hence we use central limit theorem and use means. Means = normal}
+
+When testing for influence of experiments on the curves we choose a  generalized version of the two-sampled Student's t-test namely the t-squared-test ref: "Hotellinger". Thus we propose a null-hypothesis that the mean of the different trajectories are the same. The t-squared test generalizes to multiple dimensions making it a perfect statistics for our 300 dimensional means. With the t-squared test we can handle independent multivariate normal distributions by calculating the mean and standard deviation of the one 100 repetitions in each experiment and finally compare all possible sets of two experiments. This statistics deserves its own explanation which we briefly provide in the appendix.
 
 
 %\begin{figure}[h]
@@ -104,24 +100,6 @@ Ward linkage then becomes the function that determines the agglomeration that cr
 %	\label{fig:dens}
 %\end{figure}
 
-\begin{equation}\begin{array}{lll}
-		{\mu_{1}=\begin{bmatrix*}[r] -0.67 \\	0.78 \\	1.12 \\	-0.45 \\	-0.85 \\	1.18 \\	1.27 \\	0.6 \\ -0.8 \\ 	1.11 \\	1.23	\end{bmatrix*} \quad }
-		{\mu_{2}=\begin{bmatrix*}[r]0.33 \\	-0.39 \\	-0.56 \\	0.22 \\	0.42 \\	-0.59 \\	-0.63 \\ 	-0.3 \\ 	0.4 \\	-0.55 \\	-0.61
-				\end{bmatrix*} \quad }
-		{\mu_{6}=\begin{bmatrix*}[r] -1.36 \\	2.28	\\1.13 \\	-0.58 \\	-1.04 \\	1.66 \\	1.53 \\	0.8 \\-1.89 \\ 	1.15 \\	1.44 \\
-				\end{bmatrix*} \quad }
-			\end{array}
-\end{equation}
-
-\begin{equation}\begin{array}{lll}
-{\hat{\mu}_{1}=\begin{bmatrix*}[r]1.51	\\ 0.08
-		\end{bmatrix*} \quad }
-{\hat{\mu}_{2}=\begin{bmatrix*}[r]-3.16 \\	-0.17
-		\end{bmatrix*} \quad }
-{\hat{\mu}_{6}=\begin{bmatrix*}[r]-2.02 \\	3.45
-		\end{bmatrix*} \quad }
-\end{array}
-\end{equation}
 
 \subsection*{Evaluating clusters}
 We use Rand index to evaluate the clustering of our different methods. Specifically we will compare our true labels with the labels given by a model.
@@ -143,6 +121,8 @@ R(Q, P)=\frac{S+D}{\frac{1}{2} N(N-1)}
 Neural network
 
 With leave-one out cross-validation the estimated accuracy is 71\% with a 95\% confidence interval of  [79.9\% , 62.1\%]
+
+Table of p-values from "hz", "mardia", joyston etc. for 1.1
 
 \begin{table}[H]
 \begin{tabular}{lllllllllll}
