@@ -12,18 +12,32 @@ for(i in 0:99){
 }
 person <- as.factor(c(rep(1,10),rep(2,10),rep(3,10),rep(4,10),rep(5,10),rep(6,10),rep(7,10),rep(8,10),rep(9,10),rep(10,10)))
 
-tot <- rep(0,5)
-for(i in 1:5){
+tot <- rep(0,30)
+for(i in 1:30){
 classification <- knn.cv(train=obs,cl=person,k=7, l = 0, prob = FALSE, use.all = TRUE)
 tot[i] <- sum(classification == person)/100
 }
 hist(tot)
-sd(tot)
+std <- sd(tot)
 acc <- mean(tot)
 
 #k = 7 is best with an average of 64.5% correct classifications
 
-ci_KNN <- c(acc+1.96*sqrt((acc*(1-acc))/100),acc-1.96*sqrt((acc*(1-acc))/100))
+ci_KNN <- c(acc+1.96*std/sqrt(30),acc-1.96*std/sqrt(30))
 
-acc_ann = 0.71
-ci_ANN <- c(acc_ann+1.96*sqrt((acc_ann*(1-acc_ann))/100),acc_ann-1.96*sqrt((acc_ann*(1-acc_ann))/100))
+NN_est <- read.delim("NN_est_acc.txt",header=F)
+
+NN_est = NN_est/100
+
+sd(NN_est)
+temp <- rep(0,30)
+for(i in 1:30){
+  temp[i] <- NN_est[[1]][i]
+}
+NN_est <- temp
+
+t.test(NN_est,tot,paired = T)
+
+ci_ANN <- c(mean(NN_est)+1.96*sd(NN_est)/sqrt(30),mean(NN_est)-1.96*sd(NN_est)/sqrt(30))
+1.96*sd(NN_est)/sqrt(30)
+mean(NN_est)

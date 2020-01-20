@@ -11,7 +11,7 @@
 \usepackage{amssymb}
 \usepackage{subcaption}
 \usepackage{mathtools}
-
+\usepackage{tabularx,ragged2e,booktabs,caption,sidecap,subcaption,graphicx,tikz}
 
 \begin{document}
 \begin{titlepage}
@@ -48,24 +48,9 @@ We propose the null-hypothesis \fcolorbox{gray}{gray}{$H_{0}$: The difference in
 \subsection{Model A}
 We experimented with several versions of ANNs to find the  architecture best suited for the task. We decided to use an ANN because of their already established performance in high dimensional space. The classification network was trained to classify a person from the 1 x 300 long vector of motion data.   
 
-Send to appendix:
-\begin{tabular}[H]{c l @{} l}
-\centering
-Layer no.       &
-\multicolumn{2}{c}{Function} \\
-\hline
-Layer 1     & linear(300, 150) \\
-            & ReLU \\
-            & Dropout(0.15) \\
-Layer 2     & linear(150, 75) \\ 
-            & ReLU \\
-            & Dropout(0.15) \\
-Layer 3     & linear(75, 10) \\ 
-Layer 4     & Softmax\\ 
-\end{tabular}\\ 
 
 \subsection{Model B}
-The second model was a clustering model using the K-Nearest-Kneighbor KNN algorithm, also this model was trained on the same 1 x 300 motion vector.
+The second model was a clustering model using the K-Nearest-neighbor KNN algorithm, also this model was trained on the same 1 x 300 motion vector.
 The KNN was choosen because of its simplicity and because it's very cheap computationally compared to other models such as the NN.
 \\
 Leave one out Cross Validation LOOCV was performed on both models and their performance evaluated with the zero-one loss function suitable for classification problems. NOTE: Might consider another. \hl{SVM hinge loss, TOP-k ... because multiclass}.
@@ -110,28 +95,53 @@ S=\sum_{i=1}^{N-1} \sum_{j=i+1}^{N} S_{i j}
 \begin{equation}
 D=\sum_{i=1}^{N-1} \sum_{j=i+1}^{N} D_{i j}
 \end{equation}
-The notation requires some explanation. We difine two cluster Z (true) and Q (predicted). $S_{ij} = 1$ if and only if  Z and Q agrees that the pair of observation ${x_i,x_j}$ belong to the same cluster, otherwise $S_{ij} = 0$. Similar  $D_{ij} = 1$ only if Z and Q agrees that the pair of observation ${x_i,x_j}$ doesn't belong to the same cluster. 
+The notation requires some explanation. We diffine two cluster Z (true) and Q (predicted). $S_{ij} = 1$ if and only if  Z and Q agrees that the pair of observation ${x_i,x_j}$ belong to the same cluster, otherwise $S_{ij} = 0$. Similar  $D_{ij} = 1$ only if Z and Q agrees that the pair of observation ${x_i,x_j}$ doesn't belong to the same cluster. 
 We then calculate the rand index like:
 \begin{equation}
 R(Q, P)=\frac{S+D}{\frac{1}{2} N(N-1)}
 \end{equation}
 
 \section{Results}
+LOOCV was performed 30 times to get a good estimate of the variance of the generalization accuracy of the two classification models, from this a confidence interval was calculated \ref{tab:title}.
 
-Neural network
+\begin{minipage}{\linewidth}
+\centering
+\captionof{table}{Confidence interval of classifiers} 
+\begin{tabular}{ c c}\toprule[1.5pt]
+\bf Model  & \bf CI of Generalization Accuracy \\\midrule
+ANN  & $0.708 \pm 0.0078$  \\\midrule
+KNN  & $0.644 \pm 0.0066$ \\
+\bottomrule[1.25pt]
+\end {tabular}\par
+\label{tab:title}
+\end{minipage} \bigskip
 
-With leave-one out cross-validation the estimated accuracy is 71\% with a 95\% confidence interval of  [79.9\% , 62.1\%]
 
-Table of p-values from "hz", "mardia", joyston etc. for 1.1
-
-\begin{table}[H]
-\begin{tabular}{lllllllllll}
+\begin{equation}
+\begin{array}{ccc}
+\hline \text { Test } & {\text { Test Statistic }} & {\text { p-value }} \\
+\hline \text {Paired t-test} & {10.934} & {8e-12} \\
 \hline
-\textbf{Person}   & 1                        & 2                        & 3    & 4    & 5     & 6    & 7    & 8    & 9    & 10   \\ \hline
-\textbf{Accuracy} & \multicolumn{1}{c}{50\%} & \multicolumn{1}{c}{60\%} & 60\% & 80\% & 100\% & 80\% & 70\% & 80\% & 70\% & 60\% \\ \hline
-\end{tabular}
-\caption{Neural network, Accuracy on each person}
-\label{tab:nn}
-\end{table}
+\end{array}
+\end{equation}
+
+\section{Appendix}
+\begin{tabular}[H]{c l @{} l}
+\centering
+Layer no.       &
+\multicolumn{2}{c}{Function} \\
+\hline
+Layer 1     & linear(300, 150) \\
+            & ReLU \\
+            & Dropout(0.15) \\
+Layer 2     & linear(150, 75) \\ 
+            & ReLU \\
+            & Dropout(0.15) \\
+Layer 3     & linear(75, 10) \\ 
+Layer 4     & Softmax\\ 
+\end{tabular}\\ 
+
+
+
 
 \end{document}

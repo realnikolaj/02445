@@ -6,13 +6,10 @@ output: html_notebook
 
 ```{r}
 library("Hotelling")
-library("MVN")
 load("obs.RData")
 ```
 ***PCA***
 ```{r}
-mean.obs = rbind(colMeans(obs[1:10,]),colMeans(obs[11:20,]),colMeans(obs[21:30,]),colMeans(obs[31:40,]),colMeans(obs[41:50,]),colMeans(obs[51:60,]),colMeans(obs[61:70,]),colMeans(obs[71:80,]),colMeans(obs[81:90,]),colMeans(obs[91:100,]))
-
 # PCA = prcomp(obs[1:100,], center = TRUE, scale = TRUE, retx = TRUE)
 PCA = prcomp(obs)
 Mrot = PCA$rotation
@@ -21,47 +18,53 @@ rotx = PCA$x
 dim(rotx)
 varEx = PCA$sdev
 cs = cumsum(varEx/sum(varEx))
-idx = 100-length(cs[cs > 0.95])
+idx = length(cs[1:cs > 0.95])
+
+idx = 9
 
 plot(cs)
 abline(v = idx)
+cs[idx]
 ```
+```{r}
+mean_obs <- matrix(data=NA,nrow = 160,ncol = 300)
+for(i in 0:15){ #experiment
+  for(j in 1:10){ #person
+     mean_obs[i*10+j,] <- colMeans(obs[(1+10*(j-1)+100*i):(10*(j)+100*(i)),]) 
+  }
+}
 
-
-
+prj_mean_obs <- (mean_obs %*% Mrot)[,1:9]
+```
 
 ***Hotelling's two-sampled t-squared test for comparing difference in multivaraite means***
 ```{r}
-t2 = hotelling.test(rotx[,1:9], rotx[,1:9])
+t2 = hotelling.test(prj_mean_obs[1:10,], prj_mean_obs[131:140,])
 # t2 = hotelling.test(obs[1:100,idx], obs[401:500,idx])
-t2$stats
+#t2$stats
 t2$pval
 ```
 ***All tests***
 ```{r}
-pArr = array(data = NA, dim=c(128))
+library(rlist)
+pArr = list()
 
-
-for (i in 0:15){
-  count = 1
-  print(i)
-  for (j in 1:16){
-
-    
-    if (j+1 == i+1){
-      next
+for(i in 1:16){
+  for(j in 1:16){
+    if(i==j){
+      pArr <- list.append(pArr,0)
     }
-    print(j)
-    count = count+1
-    t2 = hotelling.test(obs[((i*100)+1):((i*100)+100),idx],
-                          obs[((j*100)+1):((j*100)+100),idx])
-    pArr[(count-1)] = t2$pval
-}
-  
+    else{
+    t2 = hotelling.test(prj_mean_obs[(1+((i-1)*10)):((i)*10),], 
+                        prj_mean_obs[(1+((j-1)*10)):((j)*10),])
+    pArr <- list.append(pArr,t2$pval)
+    }
+  }
 }
 
-t2 = hotelling.test(obs[1:100,idx], obs[401:500,idx])
-summary(t2)
+pArr <- unlist(pArr)
+pArr <- matrix(pArr,nrow=16,byrow = T)
 
+unsignificant <- pArr > 0.05
+which(unsignificant,arr.ind = T)
 ```
-
