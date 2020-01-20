@@ -97,7 +97,7 @@ data = torch.from_numpy(data).float()
 target = torch.from_numpy(target).long()
 batch_size=10
 
-for j in tqdm.tqdm(range(20),unit="cross-validation"):
+for j in tqdm.tqdm(range(3),unit="cross-validation"):
     test_acc_all = []
     train_acc_all = []
 
@@ -126,5 +126,5 @@ for j in tqdm.tqdm(range(20),unit="cross-validation"):
     test_acc_final = np.array(test_acc_all)
     train_acc_final = np.array(train_acc_all)
     
-    np.save("test_acc_final{}".format(5+j),test_acc_final)
-    np.save("train_acc_final{}".format(5+j),train_acc_final)
+    np.save("test_acc_final{}".format(25+j),test_acc_final)
+    np.save("train_acc_final{}".format(25+j),train_acc_final)
