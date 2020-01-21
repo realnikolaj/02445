@@ -34,7 +34,7 @@ for(i in 0:15){ #experiment
   }
 }
 
-prj_mean_obs <- (mean_obs %*% Mrot)[,1:9]
+prj_mean_obs <- (mean_obs %*% Mrot)[,1:idx]
 ```
 
 ***Hotelling's two-sampled t-squared test for comparing difference in multivaraite means***
@@ -68,3 +68,9 @@ pArr <- matrix(pArr,nrow=16,byrow = T)
 unsignificant <- pArr > 0.05
 which(unsignificant,arr.ind = T)
 ```
+#Confusion matrix
+```{r}
+heatmap(pArr,Rowv = NA,Colv = NA)
+
+```
+
