@@ -10,4 +10,4 @@
 !*.tex
 !*.Rmd
 !.gitignore
-!.readme
+!*.md
