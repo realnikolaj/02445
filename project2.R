@@ -11,7 +11,7 @@ plot(Phosphorous$location,Phosphorous$yield,
 
 plot(Phosphorous$DGT,Phosphorous$yield,
      ylab = "Yield [100kg/ha]",
-     xlab = "Bioavailable phosphorous [µg/L]",
+     xlab = "Bioavailable phosphorous [?g/L]",
      main = "DGT")
 
 plot(Phosphorous$olsenP,Phosphorous$yield,
@@ -36,7 +36,7 @@ fit_DGT_CI_low <- CI_DGT[1]*x.DGT/(CI_DGT[4]+x.DGT)
 fit_DGT_CI_high <- CI_DGT[3]*x.DGT/(CI_DGT[2]+x.DGT)
 plot(Phosphorous$DGT,Phosphorous$yield,
      ylab = "Yield [100kg/ha]",
-     xlab = "Bioavailable phosphorous [µg/L]",
+     xlab = "Bioavailable phosphorous [?g/L]",
      main = "Michaelis-Menten model for DGT")
 lines(x.DGT,fit_model_DGT,lwd=2)
 lines(x.DGT,fit_DGT_CI_high,lty=5,lwd=2, col="red")
@@ -45,7 +45,13 @@ lines(x.DGT,fit_DGT_CI_low,lty=5,lwd=2,col="green")
 
 plot(coef(phos.DGT.model)[1]*seq(min(Phosphorous$DGT),max(Phosphorous$DGT),length=36)/(coef(phos.DGT.model)[2]+seq(min(Phosphorous$DGT),max(Phosphorous$DGT),length=36)),resid(phos.DGT.model))
 
+par(mfrow=c(1,2))
 
+plot(Phosphorous$DGT,Phosphorous$yield,
+     ylab = "Yield [100kg/ha]",
+     xlab = "Bioavailable phosphorous [?g/L]",
+     main = "Michaelis-Menten model for DGT")
+lines(x.DGT,fit_model_DGT,lwd=2)
 
 
 
@@ -102,7 +108,7 @@ fit.DGT.lm.CI.high <- CI_DGT_linear[3]+CI_DGT_linear[4]*x.DGT
 
 plot(Phosphorous$DGT,Phosphorous$yield,
      ylab = "Yield [100kg/ha]",
-     xlab = "Bioavailable phosphorous [µg/L]",
+     xlab = "Bioavailable phosphorous [?g/L]",
      main = "Linear model for DGT")
 lines(x.DGT,fit.DGT.lm,lwd=2)
 lines(x.DGT,fit.DGT.lm.CI.high,lwd=2,col="red",lty=5)
@@ -111,6 +117,22 @@ lines(x.DGT,fit.DGT.lm.CI.low,lwd=2,col="green",lty=5)
 
 
 plot(DGT.lm)
+
+
+par(mfrow=c(2,1))
+
+plot(Phosphorous$DGT,Phosphorous$yield,
+     ylab = "Yield [100kg/ha]",
+     main = "Michaelis-Menten model for DGT")
+lines(x.DGT,fit_model_DGT,lwd=2)
+
+plot(Phosphorous$DGT,Phosphorous$yield,
+     ylab = "Yield [100kg/ha]",
+     xlab = "Bioavailable phosphorous [?g/L]",
+     main = "Linear model for DGT")
+lines(x.DGT,fit.DGT.lm,lwd=2)
+
+
 
 
 
@@ -125,6 +147,10 @@ for(i in 1:36){
         DGT.error[i] <- (test$yield-estimate)^2
 }
 DGT.rmse <- sqrt(mean(DGT.error))
+
+
+
+
 
 
 
@@ -144,6 +170,9 @@ olsenP.rmse <- sqrt(mean(olsenP.error))
 
 
 
+
+
+
 #----LOOCV of linear model on Olsen-P----
 olsenP.linear.error <- rep(0,36)
 for(i in 1:36){
@@ -159,6 +188,8 @@ olsenP.linear.rmse <- sqrt(mean(olsenP.linear.error))
 
 
 
+
+
 #----LOOCV of linear model on DGT----
 DGT.linear.error <- rep(0,36)
 for(i in 1:36){
@@ -169,6 +200,8 @@ for(i in 1:36){
         DGT.linear.error[i] <- (test$yield-estimate)^2
 }
 DGT.linear.rmse <- sqrt(mean(DGT.linear.error))
+
+
 
 
 
