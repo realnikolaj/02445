@@ -23,40 +23,52 @@
 	\maketitle
 	
 \subsection*{Summary}
-Data collection can be expensive and time consuming so how do we decide what to collect and how to collect it? That is the job of a data scientist to answer and in this report we  examine different techniques of measuring bio-available phosphorous in soil and analyze them individually as well as determine whether the amount of bio-available phosporous influence the yield of a barley. \\ We fid that the yield certainly correlates with bio-available phosphprous but only up to a point whereas afterwards increasing the amount of phoshorous does not have a significant effect on the yield of barley. We conclude that the two measuring techniques were significantly different and make recommendation towards the more expensive technique.
+In most industries learning from data is second nature but as data collection become very expensive and time consuming, deciding what to collect and how to collect it naturally follows. That is a data scientist's job answer and in this report we examine two different techniques of measuring bio-available phosphorous in soil and analyze both techniques using a linear- and a non-linear model.\\ We conclude by analysing data that bio-available phosphprous does have an influence on the yield of Barley but only up to a certain amount whereas afterwards increasing phoshorous in soil does not have a \hl{significant, IS THAT TRUE?} effect on the yield of barley. We conclude that the two measuring techniques were significantly different and make recommendation towards the more expensive technique DGT and that the yield be estimated by a non-linear model.
 	
 \end{titlepage}
 
 
 \section{introduction}
-Crops need nutrients and if the levels of certain nutrients is too low the yield will be affected. Measuring the bio-available phoshporous BAP in soil is an important task for farmers in order to provide his or hers crops with sufficient amounts of nutrients. We know that the BAP is an important nutrient for plants but how big exactly is this influence of BAP to the yield of barley if it's there at all? That is the first aim of this report - to analyze and determine whether there is a significant influence from BAP on the yield and try and determine a model to describes this proposed effect of BAP. We analyze the models proposed and evaluate them on their fit to actual data. \\ A new and more expensive measurement technique "DGT" is proposed to be better than the older "Olsen P" technique. Anyzing these two techniques are the second aim for this report and to determine if there's a significant difference between the two in order to make a detailed and guided recommendation for farmers. We will determine  ... missing information about statistic test used to choose between Olsen and DGT.
+Crops need nutrients and if the levels of certain nutrients is too low the yield will be affected. Measuring the bio-available phoshporous BAP in soil is an important task for farmers in order to provide his or hers crops with sufficient amounts of nutrients. We know that the BAP is an important nutrient for plants but how big exactly is this influence of BAP to the yield of barley if it's there at all? That is the first aim of this report - to analyze and determine whether there is a significant influence from BAP on the yield and try and determine a model that best describes this proposed effect. We analyze the models proposed and evaluate them on their fit to actual data using Leave-one-out cross validation LOOCV. \\ A new and more expensive measurement technique "DGT" is proposed to be better than the older "Olsen P" technique. Analysing these two techniques is the second aim for this report and to determine if there's a significant difference between the two in order to make a well-informed and guided recommendation for farmers. We will use a paired Student's t-Test to compare the squared error values from the LOOCV algorithm.
 
 
 
 
 \section{Data}
-An experiment was performed on nine different fields spread across Denmark and Norway and each field partitioned into 4 plots. The yield of barley was measured and soil samples were analyzed by the two measuring techniques "DGT" and "Olsen P".
+An experiment was performed on nine different fields spread across Denmark and Norway and each field partitioned into 4 plots. The yield of barley was measured and soil samples were analyzed by two measuring techniques, "DGT" and "Olsen P".
 The data contains 4 variables, three continuous and 1 categorical. The continuous variables are \textit{yield ($hkg/ha$), DGT ($\mu/L$), Olsen P ($mg/100g$)} and the categorical is a unique identifikation number for each of the nine fields.
-Observations were collected one from each of the four plots in the nine fields resulting in 36 observation of 4 variables.
-We decided to impute two missing datapoints with the mean of other plots from the same field. OBS BURDE VI IKKE BRUGE ALLE PLOTS THIL AT REGNE DENNE MEAN?.
-Our reasoning behind imputing the data was firstly, the fields do not have a high variance of yield between the plots, which means replacing the missing values with the mean would likely not be too far off the real values.
-Secondly, field 11 is an importent datapoint with the lowest BAP, and removing it might heavily impact our models. See appendix .... ??..
+Observations were collected one from each of plots in the nine fields resulting in 36 observation of 4 variables.
+We decided to impute two missing data points with the mean of other plots from the same field.
+Our reasoning behind imputing the data was firstly, the fields do not have a high variance of yield between the plots, which means replacing the missing values with the mean would likely not be too far off from the real values.
+Secondly, field 11 has importent observation with the lowest measurements of BAP and removing it might heavily impact our models.\hl{appendix the two models with and with out imputed values} See figure \ref{fig:loc} for a boxplot from each field. Figure \ref{fig:loc} shows the scaled distribution of the four observations from each of the nine fields.
  
 \begin{figure}[H]
 \includegraphics[width=\linewidth]{locationYield.png}
 \caption{"Boxplot of yield for each field. We can see the variance within a field is relatively low, and location looks to have influence on yield"}
 \label{fig:loc}
 \end{figure}
+\hl{Scale the above plot}
 
-
-Include a few good plots to highlight important features in data. You can put additional plots in the appendix.
 
 \section{methods and analysis}
-We start our analysis by assuming a linear correlation between response (yield), and our term (BAP measured with both Olsen P and DGT techniques). The resulting model is then evaluated on how well it fits our data via analysis of variance ANOVA. \hl{Plots of linear fit} \\ A non-linear model like the \textit{Michaelis-Menten model} \hl{see apendix for Michaelis model describtion} is often used for this kind of data so, like before, we evaluate the fit of this new model \hl{anova on nls?}. 
-For now we will disregard the linear model because \hl{reasons and plots} and focus on comparing the two measuring techniques using the non-linear model. \\ Using R's nls() function we fit the Michaelis-Mente models to our data and record the resulting parameters and their p-values making sure that the $\beta$ parameter is a number larger than zero i.e. a beta of zero would result in the model $response = term$. 
+We start our analysis by assuming a linear correlation between response (yield), and our term (BAP measured with both Olsen P and DGT techniques). The resulting models are then evaluated on how well they fit to data via analysis of variance ANOVA. \\ A non-linear model namely Michaelis-Menten model MM, see below equation \ref{tab:MM}, is used and just as before we evaluate the fit of this new model.
+For now we will focus on comparing the two measuring techniques using the non-linear model. \\ Using R's nls() function we fit the Michaelis-Mente models to data and record the resulting parameters and their p-values taking extra care that the $\beta$ parameter is a number larger than zero i.e. a beta of zero would result in the model $y = x$. 
+
+\hl{Here goes linear fit plot without conf.interval}
+\hl{here goes table of summary/ANOVA results}
+\begin{minipage}{\linewidth}
+	\centering
+	\captionof{table}{Michaelis Mente model} 
+	\begin{tabular}{ c }
+		\bf $y = \frac{\alpha \cdot x}{\beta + x}$  \\ 
+		\end {tabular}\par
+		\label{tab:MM}
+\end{minipage} \bigskip
+
+
 
 \subsection{Accuracy validation and testing}
-To maximize the accuracy of our estimated parameters we perform leave-one-out cross validation LOOCV and save the squared error of each fold for both models i.e one model where term is the "Olsen P" technique and one where it is "DGT". We then do a comparison of means with a paired two-sampled t-test.
+To maximize the accuracy of our estimated parameters we perform leave-one-out cross validation LOOCV and save the squared error of each fold for all four  models i.e. a non-linear- and a linear model where term is the "Olsen P" and the same where it is "DGT". We then do a comparison of means with a paired two-sampled t-test.
 
 
 \section{results}

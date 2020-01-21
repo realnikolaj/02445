@@ -23,51 +23,52 @@
 	\maketitle
 	
 \subsection*{Summary}
-Classifying trajectories is a complex problem with many dimensions. In this report we will attempt to classify trajectories with two different machine learning models, a neural network and the K-Nearest-Neighbors algorithm. We evaluated the model performances on how well they classify trajectories and subsequently predicts which test-subject performed said trajectory and compared the performance of both models. We found a significant difference between model performances in favor of the neural network $\alpha < 0.01$. In addition we analyzed 16 different experiments and their resulting trajectories and tested whether there was a significant effect of experiment on trajectories. Using a multivariate test-statistics for high dimensional data we are able to conclude that 115/120 pairs of two-sample comparisons of means were significantly different than one-another $\alpha = 0.05$.
+Classifying trajectories is a complex problem with many dimensions. In this report we will attempt to classify trajectories with two different machine learning models, a neural network and the K-Nearest-Neighbors algorithm. We evaluated each model's performances on how well they classify trajectories on new observations and compared the performance of both models. We found a significant difference between model performances in favor of the neural network $\alpha < 0.01$. In addition we analyzed 16 different experiments and their resulting trajectories and tested whether there was a significant effect of experiment on trajectories. Using a multivariate test-statistics for high dimensional data we are able to conclude that 115/120 pairs of two-sample comparisons of means were significantly different than one-another $\alpha = 0.05$ and conclude that for the vast majority of the trajectories there will be an significant effect of the experiment being performed.
 
 \end{titlepage}
 
 \section{Introduction}
-Solving complex problems has been the main drive for development in computer science and the computers has by far overceeded the humans on complex problems such as playing a game of chess or predicting the weather but only because we have been able to present them models simulating the real world for which the computer can react upon. So how do we model the real world? There are many answers, some complicated and some simple. We will be looking at trajectory data from 10 different test-subjects each performing 16 different experiments, repeated 10 times. Each experiment share the same underlying task with slight variation to it. The task for the test-subjects was that they had to move an arbitrary cylinder over another cylinder. The experiments varied between different obstacle and obstacle positions. \\ Our first aim is to classify the unique trajectories from the resulting 1600 observations and evaluate the performance of our two classifiers and compare their mean squared error using two-sampled t-test. The second aim is to look for a significant effect from the experiments on the trajectories also here we will be using a form of t-test but since we are now looking at a trajectory as a whole we must use a test-statistic which takes the dimensionality into considerations, we end up comparing trajectories by using a generalized form of the Student's t-statistic named Hotelling's t-squared statistics t2 which generalizes to p-dimensionality.
+Solving complex problems has been the main drive for development in computer science and the computers has by far overceeded the humans on complex problems such as playing a game of chess or predicting the weather but only because we have been able to present them models simulating the real world for which the computer can react upon. So how do we model the real world? There are many answers, some complicated and some simple. We will be looking at trajectory data from 10 different test-subjects each performing 16 different experiments, repeated 10 times. Each experiment share the same underlying task with slight variation to the task. The task involved having human test-subjects move a cylinder over another cylinder. The experiments varied between different obstacle heights and obstacle positions. \\ Our first aim is to classify the supposed unique motion between test-subjects within the same experiment. The data from only a single experiment is then the 10 repetitions performed by each of the 10 test subjects, on which we will train and evaluate our models on. Sampling each model 30 times with leave-one-out cross validation LOOCV we will then compare the performance in a two-sampled t-test. \\Second aim is to look for a significant effect from the experiments on the trajectories. Since the data is multivariate we will test for multivariate normality and if the results are negative we turn to central limit theorem CLT and reduce our dataset to a dataset of 160 mean trajectories, 10 means for each experiment. Finally we compare mean trajectories by using a generalized form of the Student's t-statistic namely Hotelling's t-squared statistics "$t^{2}$ which generalizes to p-dimensionality.
 
 
 \section{Data}
-The trajectory data was recorded in 3 dimensions using a motion capture camera, resulting in three continuous variables x,y and z, furthermore the data included information about which person performed the motion, in which repetition the motion was captured and which experiments was performed thus giving us three categorical variables. \\ Each trajectory observation contains 100 recordings of said coordinates - see figure TRAJ.
-A computer doesn't observe data like humans, so we decided to transform the motion data from 3 x 100 observations to 1 x 300, effectively stacking 300 coordinates along one vector.
+The trajectory \[motion\] data was recorded in 3 dimensions using a motion capture camera, resulting in three continuous variables x,y and z, furthermore the data included information about which person performed the motion, in which repetition the motion was captured and which experiments was performed thus giving us three categorical variables. \\ Each trajectory observation contains 100 recordings of said coordinates - see figure \ref{fig:trajectory}. \\Conveniently computers does not observe data like us humans, so we transform the motion data from 3 x 100 observations to 1 x 300, effectively stacking 300 coordinates along one vector and doing so we have not changed the premise of the problem.
 
-Person 9 is missing some of the initial 1-4 datapoints for some of the experiments (not experiment 2), 
-we impute the values with the first available datapoints, such that the first 1-5 datapoints are the same for those particular observation. This seems reasonable since it is only a few datapoints and they are located at the beginning of the observation, thus it is equivalent to the person starting from that position and holding it there for the first few measurements.
+\hl{Here goes motion plot traj}
 
-Include a few plots - (Distribution of curves HOW?)
+Subject 9 is missing the first 4 datapoints for some of the experiments (not experiment 2), we will impute the values by replicating the very first available datapoint, such that the first 5 datapoints become identical for those particular observation. This seems reasonable since it is only a few datapoints at the very beginning of the motion, thus it is equivalent to the person starting from that position and holding it there for the first five out of a hundred measurements.
+
+\hl{Here goes table for negative multivariate normality test}
 TRAJ, variance between curves (boxplots), 
 
 \section{Comparing classifiers}
-We decided to compare two vastly different machine learning models, an ANN and i KNN, by running them multiple times and comparing the mean of our performance measure within each model. We ran each model 30 times and by doing so recording 30 independent and identically distributed random variables for each model. Central limit theorem then tells us that these random variables will follow an approximate normal distribution and because of this fact we will be able to compare the two models by comparing the mean of their performance in a two-sampled Student's t-test.
+We decided to compare two vastly different machine learning models, an ANN and a KNN, by running them multiple times and comparing the mean of our performance measure within each model. Performance measure was a simple measure of how many correct classification out of all possible. By training our models with the LOOCV algorithm, each fold only contains one test-entry, a measure of $"1"$ for a correct classification and $"0"$ for wrong classification was returned and all values summed after completion. We ran each model 30 times and by doing so recording 30 observations of a mean performance metric. CLT then tells us that these random variables will follow an approximate normal distribution and because of this fact we will be able to compare the two models by comparing the mean of their performance in a two-sampled Student's t-test.\\
 
-We propose the null-hypothesis \fcolorbox{gray}{gray}{$H_{0}$: The difference in the means is zero}. 
+\hl{Do we have table for this comparison}
+
+We propose a null-hypothesis \fcolorbox{gray}{gray}{$H_{0}$: The difference between the means is equal to zero}. 
 \subsection{Model A}
-We experimented with several versions of ANNs to find the  architecture best suited for the task. We decided to use an ANN because of their already established performance in high dimensional space. The classification network was trained to classify a person from the 1 x 300 long vector of motion data.   
+We experimented with several versions of ANNs to find the architecture best suited for the task. We decided to use an ANN because of their already established performance in high dimensional space. The classification network was trained to classify a person from the 1 x 300 long vector of motion data. See a description of the NN layout in table \ref{tab:ann} 
+
+\hl{begin tab ann}
 
 
 \subsection{Model B}
-The second model was a clustering model using the K-Nearest-neighbor KNN algorithm, also this model was trained on the same 1 x 300 motion vector.
-The KNN was choosen because of its simplicity and because it's very cheap computationally compared to other models such as the NN.
-\\
-Leave one out Cross Validation LOOCV was performed on both models and their performance evaluated with the zero-one loss function suitable for classification problems. NOTE: Might consider another. \hl{SVM hinge loss, TOP-k ... because multiclass}.
-
-
+The second model was a clustering model using the KNN algorithm, also this model was trained on the same 1 x 300 motion vector.
+The KNN was chosen because of its simplicity and because it is very cheap computationally, compared to other models such as the NN.
 
 \section{Testing the for experimental influence}
-We decided on a test statistic of difference between experiments. If the experiment were to have a significant influence on the resulting trajectories, they should all be significantly different from one-another. The multiple test statistics to asses is then a collection of 120 comparisons between each and all experiments, only concerning about unique pairs, from which we will make our conclusion upon.\\ This raises two points of interest concerning our data:
-1. Can the distribution of the repititons withing experiments be considered multivariate \textbf{normal}?
-2. Having only 100 observations per experiment we are limited to less than 100 explaining variables \hl{Insert a reason about Degrees of freedom here}.
+If an experiment were to have a significant effect on the resulting trajectories, it should be significantly different from any other trajectory. The multiple test statistics to asses is then a collection of 120 comparisons i.a all possible combination of a single pair of experiments - dublicates and pairs of the same experiments removed.\\ 
+This proposed test statistics raises two important points concerning our data:
+\begin{enumerate}
+	\item  Are the 100 repetitions within experiments multivariate \textbf{normally} distributed?
+	\item Having only 100 observations per experiment we are limited to less than 200 explaining variables per Hotelling's T-squared statistcs $p < n_x + n_y -1$ where p is the dimensions in the multivariate observations.
+\end{enumerate}
 
-A solution for the second concern is to reduce the dimensionallity by performing principal component analysis PCA and choosing the number of principal components PC's by analyzing the resulting decompisition matrix i.e variance explained. But first we must solve the  multivariate normal assumption. \\
- We have enough observations to assume normal distribution but we should only do this within single test subjects i.e. we cannot expect the motion of one subject in a test to be identical to another subject's motion and must reduce our data to 1 mean observation per subject per experiment. We have now just limited ourselves to a maximum of nine explaining variables down from 300 \hl{have we???, see later highlight}. \\
- Fortunately performing PCA returns a 82\% variance explained by the first 9 PC's and proceede to project the matrix of means onto the rotation matrix resulted from PCA. The reason for this detour is that testing for multivariate normallity returned a negative and thus we must turn to CLT.
-
-\hl{finpuds nedenstaaende}
-When testing for influence of experiments on the curves we choose a  generalized version of the two-sampled Student's t-test namely the t-squared-test ref: "Hotellinger". Thus we propose a null-hypothesis that the mean of the different trajectories are the same. The t-squared test generalizes to multiple dimensions making it a perfect statistics for our 300 dimensional means. With the t-squared test we can handle independent multivariate normal distributions by calculating the mean and standard deviation of the one 100 repetitions in each experiment and finally compare all possible sets of two experiments. This statistics deserves its own explanation which we briefly provide in the appendix.
+The second point quickly becomes less of an issue, we will reduce the dimensionality of our data using principal component analysis PCA and choosing the number of principal components PCs by analyzing the square roots of the resulting eigenvalues i.e analyzing the variance explained by the eigenvectors. But first we must solve the multivariate normal assumption. \\
+ We have enough observations to assume normal distribution but we should only do this within single test subjects, and in fact it shows that the vast majority of variables are normally distributed individually see \ref{tab:normality} but, we cannot expect the motion of one subject in a test to be identical to another subject's motion and thus we are forced to reduce our data to one mean observation per subject per experiment. Another problem then arises, we have just reduced our data set from a large set of 1600 individual observation to a mere 160 and when we compare two experiments the number is even lower at only 10 observation, down from 100 and the scenario is that we now must limit ourselves to a maximum of nine explaining variables, down from 99 before calculating means. \hl{Whhoouv ... actually nx+ny-1 variables are allowed in two-sampled T-squared test}\\
+ This loss of data is made up for by the 82\% variance explained by the first 9 PCs. We project the matrix of means onto the rotation matrix returned from PCA. To sum it up, the reason for this detour was that testing for normality i.e multivariate normality, returned negative, the very same test which found single variables to be normally distributed did not find the 100 observation within an experiment to be of a multivariate normal distribution hence why we must turn to CLT and somehow find mean test statistics.\\
+The Hotelling's T-squared statistics is a generalized version of the Student's t statistic. It generalizes to \textit{p} dimensions. We again propose a null-hypothesis of no difference in between the means of trajectories from different experiments. 
 
 
 %\begin{figure}[h]
@@ -87,45 +88,37 @@ When testing for influence of experiments on the curves we choose a  generalized
 %\end{figure}
 
 
-\subsection*{Evaluating clusters}
-We use Rand index to evaluate the clustering of our different methods. Specifically we will compare our true labels with the labels given by a model.
-We define two measures from our clustering:
-\begin{equation}
-S=\sum_{i=1}^{N-1} \sum_{j=i+1}^{N} S_{i j}
-\end{equation}
-\begin{equation}
-D=\sum_{i=1}^{N-1} \sum_{j=i+1}^{N} D_{i j}
-\end{equation}
-The notation requires some explanation. We diffine two cluster Z (true) and Q (predicted). $S_{ij} = 1$ if and only if  Z and Q agrees that the pair of observation ${x_i,x_j}$ belong to the same cluster, otherwise $S_{ij} = 0$. Similar  $D_{ij} = 1$ only if Z and Q agrees that the pair of observation ${x_i,x_j}$ doesn't belong to the same cluster. 
-We then calculate the rand index like:
-\begin{equation}
-R(Q, P)=\frac{S+D}{\frac{1}{2} N(N-1)}
-\end{equation}
-
 \section{Results}
-LOOCV was performed 30 times to get a good estimate of the variance of the generalization accuracy of the two classification models, from this a confidence interval was calculated \ref{tab:title}.
+LOOCV was performed 30 times to get a good estimate of the variance of the generalization accuracy of the two classification models, from this a confidence interval was calculated \ref{tab:CI.acc}. Table \ref{tab:CI.acc} show the confidence intervals for both the ANN and the KNN model, the first value in second colum is the generalized accuracy measure i.e estimated percentage of successful classification. Adding and subtracting the second value from the first in the second column return the 95\% confidence intervals. We see that the two interals does not overlap, provided a 0.95 confidence level.
 
 \begin{minipage}{\linewidth}
 \centering
 \captionof{table}{Confidence interval of classifiers} 
-\begin{tabular}{ c c}\toprule[1.5pt]
-\bf Model  & \bf CI of Generalization Accuracy \\\midrule
+\begin{tabular}{ c c}\toprule[1.0pt]
+\bf Model  & \bf CI of Generalization Accuracy \\\midrule[1.5pt]
 ANN  & $0.708 \pm 0.0078$  \\\midrule
 KNN  & $0.644 \pm 0.0066$ \\
 \bottomrule[1.25pt]
 \end {tabular}\par
-\label{tab:title}
+\label{tab:CI.acc}
 \end{minipage} \bigskip
 
+\begin{minipage}{\linewidth}
+	\centering
+	\captionof{table}{Two-sampled paired comparison of means} 
+	\begin{tabular}{ c c c}\toprule[1.0pt]
+	\bf Test  & \bf Test Statistic & \bf p-value \\\midrule[1.5pt] 
+	Paired t-test  & $10.934$ &  $8e-12$ \\
+	\bottomrule[1.1pt]
+	\end {tabular}\par
+	\label{tab:ml.test}
+\end{minipage} \bigskip
 
-\begin{equation}
-\begin{array}{ccc}
-\hline \text { Test } & {\text { Test Statistic }} & {\text { p-value }} \\
-\hline \text {Paired t-test} & {10.934} & {8e-12} \\
-\hline
-\end{array}
-\end{equation}
+The same story follows from the paired test seen in table \ref{tab:ml.test}. We notice a very high test score of $10.934$ and subsequently the resulting p-value which is approximately zero. The very reason for such high test score is that all 30 observations per model each come from the LOOCV algorithm were we effectively train and test on all the data available and the resulting values will be very close to equal which gives us very little variance also evident from the small confidence interval in table \ref{tab:CI.acc} as a result we can with very high confidence say that difference in performance between the two model is not zero and that the artificial neural network is the better classifier.
 
+Testing for effect on trajectories from experiments we compared 120 unique pairs of two experiments resulting in the confusion matrix in figure \ref{fig:confusion}. The matrix shows 120 p-values representing the performed comparison between the experiment from the row against the experiment from the row. With a significance level $alpha = 0.05$ we see a large amount of significant entries $p-value < 0.05$ - colored in blue and only a handful to be excact of non-significant entries $p-value \leq 0.05$ - colored red. Interestingly must non-significant observation, 3/5, comes from the setup of "S" small height of obstacle, and then a combination of short to medium-short distance to obstacle.
+
+\hl{here goes confusion matrix}
 \section{Appendix}
 \begin{tabular}[H]{c l @{} l}
 \centering
