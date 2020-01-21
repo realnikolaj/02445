@@ -23,13 +23,13 @@
 	\maketitle
 	
 \subsection*{Summary}
-In most industries learning from data is second nature but as data collection become very expensive and time consuming, deciding what to collect and how to collect it naturally follows. That is a data scientist's job to answer and in this report we examine two different techniques of measuring bio-available phosphorous in soil and analyze both techniques using a linear- and a non-linear model.\\ We conclude by analysing data that bio-available phosphprous does have an influence on the yield of Barley but only up to a certain amount whereas afterwards increasing phoshorous in soil does not have a \hl{significant, IS THAT TRUE?} effect on the yield of barley. We conclude that the two measuring techniques were significantly different and make recommendation towards the more expensive technique DGT and that the yield be estimated by a non-linear model.
+In most industries learning from data is second nature but as data collection become very expensive and time consuming, deciding what to collect and how to collect it naturally follows. That is a data scientist's job to answer and in this report we examine two different techniques of measuring bio-available phosphorous in soil and analyze both techniques using a linear- and a non-linear model.\\ We conclude by analysing data that bio-available phosphprous does have an influence on the yield of Barley but only up to a certain amount whereas afterwards increasing phoshorous in soil does not have a significant effect on the yield of barley. We conclude that the two measuring techniques were significantly different and make recommendation towards the more expensive technique DGT and that the yield be estimated by a non-linear model.
 	
 \end{titlepage}
 
 
 \section{introduction}
-Crops need nutrients and if the levels of certain nutrients is too low the yield will be affected. Measuring the bio-available phoshporous BAP in soil is an important task for farmers in order to provide his or hers crops with sufficient amounts of nutrients. We know that the BAP is an important nutrient for plants but how big exactly is this influence of BAP to the yield of barley if it's there at all? That is the first aim of this report - to analyze and determine whether there is a significant influence from BAP on the yield and try and determine a model that best describes this proposed effect. We analyze the models and evaluate them on their fit to actual data using Leave-one-out cross validation LOOCV. \\ A new and more expensive measurement technique "DGT" is proposed to be better than the older "Olsen P" technique. Analysing these two techniques is the second aim for this report and to determine if there's a significant difference between the two in order to make a well-informed and guided recommendation for farmers.\hl{We will use a paired Student's t-Test (will we)} to compare the squared error values from the LOOCV algorithm.
+Crops need nutrients and if the levels of certain nutrients is too low the yield will be affected. Measuring the bio-available phoshporous BAP in soil is an important task for farmers in order to provide his or hers crops with sufficient amounts of nutrients. We know that the BAP is an important nutrient for plants but how big exactly is this influence of BAP to the yield of barley if it's there at all? That is the first aim of this report - to analyze and determine whether there is a significant influence from BAP on the yield and try and determine a model that best describes this proposed effect. We analyze the models and evaluate them on their fit to actual data using Leave-one-out cross validation LOOCV. \\ A new and more expensive measurement technique "DGT" is proposed to be better than the older "Olsen P" technique. Analysing these two techniques is the second aim for this report and to determine if there's a significant difference between the two in order to make a well-informed and guided recommendation for farmers.We will use a paired Student's t-Test to compare the squared error values from the LOOCV algorithm.
 
 
 
@@ -40,14 +40,13 @@ The data contains 4 variables, three continuous and 1 categorical. The continuou
 Observations were collected one from each of the plots in the nine fields resulting in 36 observation of 4 variables.
 We decided to impute two missing data points with the mean of other plots from the same field.
 Our reasoning behind imputing the data was firstly, the fields do not have a high variance of yield between the plots, which means replacing the missing values with the mean would likely not be too far off from the real values.
-Secondly, field 11 has importent observation with the lowest measurements of BAP and removing it might heavily impact our models.\hl{appendix the two models with and with out imputed values} See figure \ref{fig:loc} for a boxplot from each field. Figure \ref{fig:loc} shows the scaled distribution of the four observations from each of the nine fields.
+Secondly, field 11 has importent observation with the lowest measurements of BAP and removing it might heavily impact our models. See figure \ref{fig:loc} for a boxplot from each field.
  
 \begin{figure}[H]
 \includegraphics[width=\linewidth]{locationYield.png}
 \caption{"Boxplot of yield for each field. We can see the variance within a field is relatively low, and location looks to have influence on yield"}
 \label{fig:loc}
 \end{figure}
-\hl{Scale the above plot}
 
 
 \section{Methods and Analysis}
@@ -117,19 +116,14 @@ With 35 observation per model it would be safe to assume a normal distribution a
 
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{modelsEnv.png}
-	\caption{something}
-	\label{fig:qqplot}
+	\caption{Model with confidence interval}
+	\label{fig:modelCI}
 \end{figure}
 
 
 
 \section{discussion and conclusion}
 
-From our analysis we conclude that our investigation was well-founded, with a $\alpha = 0.95$ for the difference between using DGT- and Olsen P techniques in favor of the more expensive DGT. It  must also be noted that had we only done a linear regression model, we would not have come to the same conclusion. \\ All 4 models showed a 0.95 level of significant influence of bio-available phosporous in the soil on the resulting yield of barley.
-
-What are your conclusions? The conclusion should be connected to the aim of the report in the introduction.
-	Highight important results
-	
-If you have found interesting problems/aspects that you haven’t carried out, you can specify them here as ‘future work’.
+From our analysis we conclude that our investigation was well-founded, with a $\alpha = 0.95$ for the difference between using DGT- and Olsen P techniques in favor of the more expensive DGT. It  must also be noted that had we only done a linear regression model, we would not have come to the same conclusion. \\ All 4 models showed a 0.95 level of significant influence of bio-available phosphorous in the soil on the resulting yield of barley.
 
 \end{document}
