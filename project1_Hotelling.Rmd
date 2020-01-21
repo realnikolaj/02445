@@ -25,7 +25,7 @@ idx = length(cs[1:cs > 0.95])
 idx = 9
 cs[idx]
 ```
-#Find out how many variables are univaratenormal out of the 300
+#Find out how many variables are univariatenormal out of the 300
 ```{r}
 good <- matrix(data=NA,nrow=16,ncol=300)
 for(j in 1:16){

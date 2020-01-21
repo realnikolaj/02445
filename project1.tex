@@ -36,6 +36,13 @@ The trajectory \[motion\] data was recorded in 3 dimensions using a motion captu
 
 \hl{Here goes motion plot traj}
 
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{curve.png}
+\caption{example of data}
+\label{fig:trajectory}
+\end{figure}
+
+
 Subject 9 is missing the first 4 datapoints for some of the experiments, we will impute the values by replicating the first available datapoint, such that the first 5 datapoints become identical for those particular observation.
 
 \hl{Here goes table for negative multivariate normality test}
@@ -75,7 +82,9 @@ The second model was a clustering model using the KNN algorithm, this model was 
 The KNN was chosen because of its simplicity and because it is very cheap computationally, compared to other models such as the ANN.
 
 \section{Testing the for experimental influence}
-If an experiment were to have a significant effect on the resulting trajectories, it should be significantly different from any other trajectory. The multiple test statistics to asses is then a collection of 120 comparisons i.a all possible combination of a single pair of experiments - dublicates and pairs of the same experiments removed.\\ 
+Our variables needs to be normally distributed within an experiment to use the test-statistic. We tested our variables if they were normally distributed and found that only 12 out of the 300 were for all of the experiments. When comparing the experiments we would need to use the same variables, we would be limited to those 12 and need to removed the majority of the data, and at that point the comparison would no longer make sense to make.
+
+If an experiment were to have a significant effect on the resulting trajectories, it should be significantly different from any other trajectory. The multiple test statistics to asses is then a collection of 120 comparisons i.a all possible combination of a single pair of experiments - duplicates and pairs of the same experiments removed.\\ 
 This proposed test statistics raises two important points concerning our data:
 \begin{enumerate}
 	\item  Are the 100 repetitions within experiments multivariate \textbf{normally} distributed?
@@ -87,26 +96,8 @@ The second point quickly becomes less of an issue, we will reduce the dimensiona
  This loss of data is made up for by the 82\% variance explained by the first 9 PCs. We project the matrix of means onto the rotation matrix returned from PCA. To sum it up, the reason for this detour was that testing for normality i.e multivariate normality, returned negative, the very same test which found single variables to be normally distributed did not find the 100 observation within an experiment to be of a multivariate normal distribution hence why we must turn to CLT and somehow find mean test statistics.\\
 The Hotelling's T-squared statistics is a generalized version of the Student's t statistic. It generalizes to \textit{p} dimensions. We again propose a null-hypothesis of no difference in between the means of trajectories from different experiments. 
 
-
-%\begin{figure}[h]
-%	\centering
-%	\begin{subfigure}{.5\textwidth}
-%		\centering
-%		\includegraphics[width=\linewidth]{datasets/3_GMM2.png}
-%		\label{fig:density}
-%	\end{subfigure}%
-%	\begin{subfigure}{.5\textwidth}
-%		\centering
-%		\includegraphics[width=\linewidth]{datasets/3_GMM10.png}
-%		\label{fig:density10}
-%	\end{subfigure}
-%	\caption{Gaussian Mixture Model clusters for K=2 cluster (left pane) and K=10 cluster (right pane)}
-%	\label{fig:dens}
-%\end{figure}
-
-
 \section{Results}
-LOOCV was performed 30 times to get a good estimate of the variance of the generalization accuracy of the two classification models, from this a confidence interval was calculated \ref{tab:CI.acc}. Table \ref{tab:CI.acc} show the confidence intervals for both the ANN and the KNN model, the first value in second colum is the generalized accuracy measure i.e estimated percentage of successful classification. Adding and subtracting the second value from the first in the second column return the 95\% confidence intervals. We see that the two interals does not overlap, provided a 0.95 confidence level.
+LOOCV was performed 30 times to get a good estimate of the variance of the generalization accuracy of the two classification models, from this a confidence interval was calculated \ref{tab:CI.acc}. Table \ref{tab:CI.acc} show the confidence intervals for both the ANN and the KNN model, the first value in second column is the generalized accuracy measure i.e estimated percentage of successful classification. Adding and subtracting the second value from the first in the second column return the 95\% confidence intervals. We see that the two intervals does not overlap, provided a 0.95 confidence level.
 
 \begin{minipage}{\linewidth}
 \centering
@@ -135,7 +126,9 @@ The same story follows from the paired test seen in table \ref{tab:ml.test}. We 
 
 Testing for effect on trajectories from experiments we compared 120 unique pairs of two experiments resulting in the confusion matrix in figure \ref{fig:confusion}. The matrix shows 120 p-values representing the performed comparison between the experiment from the row against the experiment from the row. With a significance level $alpha = 0.05$ we see a large amount of significant entries $p-value < 0.05$ - colored in blue and only a handful to be excact of non-significant entries $p-value \leq 0.05$ - colored red. Interestingly must non-significant observation, 3/5, comes from the setup of "S" small height of obstacle, and then a combination of short to medium-short distance to obstacle.
 
-\begin{table}[H]
+\begin{minipage}{\linewidth}
+\centering
+\captionof{table}{Non-significant pairs of Experiments}
 \begin{tabular}{cc}\toprule[1.5pt]
 \textbf{Experiment pair} & \textbf{p-value} \\\midrule[1.25pt]
 1, 4         	& 0.137            \\\midrule
@@ -144,7 +137,8 @@ Testing for effect on trajectories from experiments we compared 120 unique pairs
 5, 8        	& 0.0855           \\\midrule
 6, 9      	& 0.162           \\\bottomrule[1.25pt]
 \end{tabular}
-\end{table}
+\label{tab:sig}
+\end{minipage}
 
 \section{Appendix}
 
