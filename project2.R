@@ -1,3 +1,4 @@
+library("car")
 load("fosfor_data.Rdata")
 Phosphorous$location <- as.factor(Phosphorous$location)
 Phosphorous$yield[34] <-(Phosphorous$yield[33]+Phosphorous$yield[35])/2
@@ -36,7 +37,7 @@ fit_DGT_CI_low <- CI_DGT[1]*x.DGT/(CI_DGT[4]+x.DGT)
 fit_DGT_CI_high <- CI_DGT[3]*x.DGT/(CI_DGT[2]+x.DGT)
 plot(Phosphorous$DGT,Phosphorous$yield,
      ylab = "Yield [100kg/ha]",
-     xlab = "Bioavailable phosphorous [?g/L]",
+     xlab = "Bioavailable phosphorous [μg/L]",
      main = "Michaelis-Menten model for DGT")
 lines(x.DGT,fit_model_DGT,lwd=2)
 lines(x.DGT,fit_DGT_CI_high,lty=5,lwd=2, col="red")
@@ -119,13 +120,7 @@ lines(x.DGT,fit.DGT.lm.CI.low,lwd=2,col="green",lty=5)
 plot(DGT.lm)
 
 
-par(mfrow=c(2,1))
-
-plot(Phosphorous$DGT,Phosphorous$yield,
-     ylab = "Yield [100kg/ha]",
-     main = "Michaelis-Menten model for DGT")
-lines(x.DGT,fit_model_DGT,lwd=2)
-
+par(mfrow=c(2,2))
 plot(Phosphorous$DGT,Phosphorous$yield,
      ylab = "Yield [100kg/ha]",
      xlab = "Bioavailable phosphorous [?g/L]",
@@ -133,6 +128,26 @@ plot(Phosphorous$DGT,Phosphorous$yield,
 lines(x.DGT,fit.DGT.lm,lwd=2)
 
 
+plot(Phosphorous$DGT,Phosphorous$yield,
+     ylab = "Yield [100kg/ha]",
+     xlab = "Bioavailable phosphorous [?g/L]",
+     main = "Michaelis-Menten model for DGT")
+lines(x.DGT,fit_model_DGT,lwd=2)
+
+
+
+plot(Phosphorous$olsenP,Phosphorous$yield,
+     ylab = "Yield [100kg/ha]",
+     xlab = "Bioavailable phosphorous [mg/100g]",
+     main = "Linear model for Olsen-P")
+lines(x.olsen,fit.olsen.lm,lwd=2)
+
+plot(Phosphorous$olsenP,Phosphorous$yield,
+     ylab = "Yield [100kg/ha]",
+     xlab = "Bioavailable phosphorous [mg/100g]",
+     main = "Michaelis-Menten model for Olsen-P",ylim=c(20,110))
+lines(x.olsen,fit_model_olsen,lwd=2)
+text(x = 50,y = 50, labels = "R2 = 2222")
 
 
 
@@ -213,5 +228,25 @@ t.test(DGT.error,DGT.linear.error,paired = T) #0.023 significant
 t.test(DGT.linear.error,olsenP.linear.error,paired = T) #0.069 not significant
 t.test(DGT.linear.error,olsenP.error,paired = T) #0.12 not significant
 t.test(olsenP.linear.error,olsenP.error,paired = T) #0.76 not significant
+
+
+
+summary(phos.DGT.model)
+summary(DGT.lm)
+
+par(mfrow=c(2,2))
+
+qqnorm(DGT.linear.error, pch = 1, ylab = "linear DGT error quantile", frame = FALSE)
+qqline(DGT.linear.error, col = "steelblue", lwd = 2)
+qqPlot(DGT.linear.error, ylab = "", main = "Normal Q-Q plot with confidence envelope")
+
+qqnorm(DGT.error, pch = 1, ylab = "non-linear DGT error quantile", frame = FALSE)
+qqline(DGT.error, col = "steelblue", lwd = 2)
+qqPlot(DGT.error, ylab = "", main = "Normal Q-Q plot with confidence envelope ")
+
+
+qqnorm(olsenP.error, pch = 1, frame = FALSE)
+qqline(olsenP.error, col = "steelblue", lwd = 2)
+qqPlot(olsenP.error, , main = "Normal Q-Q plot with")
 
 
