@@ -83,7 +83,7 @@ timestep <- as.factor(rep(c(1:100),16*10*10))
 
 df <- data.frame(experiment,person,timestep,x,y,z)
 
-plot_ly(x=df$x,y=df$y,z=df$z,type="scatter3d")
-
+p = plot_ly(x = df$x[1:100], y = df$y[1:100], z = df$z[1:100],type="scatter3d",colors = c("red","blue"),name = "Experiment 1")
+add_trace(p=p,x = df$x[1001:1100], y = df$y[1001:1100], z = df$z[1001:1100],name="Experiment 2")
 # save(df,file = "armDF.Rdata")
 

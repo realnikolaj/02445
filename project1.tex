@@ -48,10 +48,27 @@ We decided to compare two vastly different machine learning models, an ANN and a
 
 We propose a null-hypothesis \fcolorbox{gray}{gray}{$H_{0}$: The difference between the means is equal to zero}. 
 \subsection{Model A}
-We experimented with several versions of ANNs to find the architecture best suited for the task. We decided to use an ANN because of their already established performance in high dimensional space. The classification network was trained to classify a person from the 1 x 300 long vector of motion data. See a description of the ANN layout in table \ref{tab:ann} 
+We experimented with several versions of ANNs to find the architecture best suited for the task. We decided to use an ANN because of their good performance on high dimensional data. The classification network was trained to classify a person from the 1 x 300 long vector of motion data. See a description of the ANN layout in table \ref{tab:ann}.
 
-\hl{begin tab ann}
-
+\begin{table}[H]
+\centering
+\begin{tabular}[H]{c l @{} l}
+\centering
+Layer no.       &
+\multicolumn{2}{c}{Function} \\
+\hline
+Layer 1     & linear(300, 150) \\
+            & ReLU \\
+            & Dropout(0.15) \\
+Layer 2     & linear(150, 75) \\ 
+            & ReLU \\
+            & Dropout(0.15) \\
+Layer 3     & linear(75, 10) \\ 
+Layer 4     & Softmax\\ 
+\end{tabular}\\
+\caption{Network parameters}
+\label{tab:ann} 
+\end{table}
 
 \subsection{Model B}
 The second model was a clustering model using the KNN algorithm, this model was trained on the same 1 x 300 motion vector.
@@ -118,27 +135,19 @@ The same story follows from the paired test seen in table \ref{tab:ml.test}. We 
 
 Testing for effect on trajectories from experiments we compared 120 unique pairs of two experiments resulting in the confusion matrix in figure \ref{fig:confusion}. The matrix shows 120 p-values representing the performed comparison between the experiment from the row against the experiment from the row. With a significance level $alpha = 0.05$ we see a large amount of significant entries $p-value < 0.05$ - colored in blue and only a handful to be excact of non-significant entries $p-value \leq 0.05$ - colored red. Interestingly must non-significant observation, 3/5, comes from the setup of "S" small height of obstacle, and then a combination of short to medium-short distance to obstacle.
 
-\hl{here goes confusion matrix}
-\section{Appendix}
 \begin{table}[H]
-\centering
-\begin{tabular}[H]{c l @{} l}
-\centering
-Layer no.       &
-\multicolumn{2}{c}{Function} \\
-\hline
-Layer 1     & linear(300, 150) \\
-            & ReLU \\
-            & Dropout(0.15) \\
-Layer 2     & linear(150, 75) \\ 
-            & ReLU \\
-            & Dropout(0.15) \\
-Layer 3     & linear(75, 10) \\ 
-Layer 4     & Softmax\\ 
-\end{tabular}\\
-\caption{Network parameters}
-\label{tab:ann} 
+\begin{tabular}{cc}\toprule[1.5pt]
+\textbf{Experiment pair} & \textbf{p-value} \\\midrule[1.25pt]
+1, 4         	& 0.137            \\\midrule
+4, 7  		& 0.177            \\\midrule
+7, 10           	& 0.278            \\\midrule
+5, 8        	& 0.0855           \\\midrule
+6, 9      	& 0.162           \\\bottomrule[1.25pt]
+\end{tabular}
 \end{table}
+
+\section{Appendix}
+
 
 
 
