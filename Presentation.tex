@@ -19,7 +19,7 @@
 
 %\usetheme[department=compute]{DTU}
 
-\title[DTU Templates]{02445 \\ Statistical evaluation  \\ of artificial intelligence systems \\ Project II}
+\title[DTU Templates]{02445 \\ Statistical evaluation  \\ of artificial intelligence systems}
 \author{Nikolaj S. Povlsen \\ Rasmus J. Pedersen}
 \institute{Technical University of Denmark (DTU)}
 \date{\today}
@@ -35,7 +35,7 @@
 
 
 \frame{
-	\frametitle{}
+	\frametitle{Project 2}
 	\begin{block}{Choosing between Olsen P and DGT measurements}
 		\begin{itemize}
 			\item Evaluating models
@@ -105,4 +105,110 @@
 		\includegraphics[width=.9\linewidth]{qqplot.png}
 	\end{figure}
 }
+
+
+
+
+
+%%%% Next project
+\frame{
+	\frametitle{Project 1}
+	\begin{block}{Classifying from motion}
+		\begin{itemize}
+			\item Comparing models
+		\end{itemize}
+	\end{block}
+	\begin{block}{Does the experiment influence the motion}
+		\begin{itemize}
+			\item Test statistics
+			\item PCA
+			\item $T^2$
+		\end{itemize}
+		
+	\end{block}
+}
+
+\frame{
+	\frametitle{Resuts}
+	\begin{block}{Model accuracy}
+		\begin{table}
+			\begin{tabular}{ c c}\toprule[2pt]
+				\bf Model  & \bf CI of Generalization Accuracy \\\midrule[1.5pt]
+				ANN  & $0.708 \pm 0.0078$  \\\midrule
+				KNN  & $0.644 \pm 0.0066$ \\
+				\bottomrule[1.25pt]
+			\end {tabular}
+		\end{table}
+	\end{block}
+	\begin{block}{Paired t-test}
+		\begin{table}
+			\begin{tabular}{ c c c}\toprule[1.5pt]
+				\bf Test  & \bf Test Statistic & \bf p-value \\\midrule[1.5pt]
+				Paired t-test  & $10.934$ &  $8e-12$ \\
+				\bottomrule[1.5pt]
+			\end {tabular}
+		\end{table}
+	\end{block}
+
+}
+
+
+\frame{
+	\frametitle{Testing for normally distributed variables}
+	\begin{figure}[H]
+
+		\includegraphics[width=\linewidth]{multiVar.png}
+
+	\end{figure}
+}
+\frame{
+	\frametitle{Central Limit Theorem }
+	\centering	\huge \color{red} Equals 90\% loss of data
+
+}
+\frame{
+	\frametitle{PCA }
+	\large But 9 principal components explain 82\% of the variance
+		\begin{figure}[H]
+		\includegraphics[width=\linewidth]{variance_explained.png}
+	\end{figure}
+	
+}
+
+\frame{
+	\frametitle{$T^2$}
+	\Large 5 out of 120 pairs of tests were not significant
+	\centering
+	\begin{table}
+		\small
+		\begin{tabular}{cc}\toprule[1.5pt]
+			\textbf{Experiment pair} & \textbf{p-value} \\\midrule[1.25pt]
+			1, 4         	& 0.137            \\\midrule
+			4, 7  		& 0.177            \\\midrule
+			7, 10           	& 0.278            \\\midrule
+			5, 8        	& 0.0855           \\\midrule
+			6, 9      	& 0.162           \\\bottomrule[1.25pt]
+		\end{tabular}
+	\end{table}
+	
+}
+
+\frame{
+	\frametitle{The experiments}
+	\centering
+	\LARGE
+
+\begin{table}[]
+	\begin{tabular}{l|lll}
+		& S                      & M  & T  \\ \hline
+		15.0 cm & \color{violet}1                      & 2  & 3  \\ 
+		22.5 cm & \textbf{\color{violet}4} & \color{red}5  & \color{orange}6  \\
+		30.0 cm & \textbf{\color{blue}7} & \color{red}8  & \color{orange}9  \\ 
+		37.5 cm & \color{blue}10                     & 11 & 12 \\
+		45.0 cm & 13                     & 14 & 15
+	\end{tabular}
+\end{table}
+
+}
+
 \end{document}
