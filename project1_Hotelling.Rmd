@@ -50,8 +50,9 @@ sum(good2)
 
 #Plot
 ```{r}
-plot(cs[1:50],ylab="Variance Explained",xlab="Principle componets",main="Cumulative Variance Explained")
-abline(v = idx)
+plot(cs[1:50],ylab="Variance Explained",xlab="Principle componets",main="Cumulative Variance Explained", )
+abline(v = idx, h = 0.82)
+
 ```
 #Projection
 ```{r}
@@ -98,6 +99,25 @@ which(unsignificant,arr.ind = T)
 ```
 ```{r}
 multivar <- mvn(data=obs[1:100,],mvnTest = "dh") #hz,royston,dh,energy
-multivar$multivariateNormality
+multivar$univariateNormality
 ```
+
+```{r}
+par(mfrow=c(1,2))
+result <- mvn(obs[1:100, c(8,10)], mvnTest = "hz", multivariatePlot = "contour")
+
+result <- mvn(obs[1:100, c(1,101)], mvnTest = "hz", multivariatePlot = "contour")
+```
+
+```{r}
+par(mfrow=c(2,1))
+hist(obs[201:300, 144], xlab = "Experiment #3" , main = "Histogrom of the 8 th. x-coordinate")
+hist(obs[701:800, 144 ], xlab = "Experiment #8",  main = NULL)
+```
+```{r}
+par(mfrow=c(2,1))
+hist(obs[, 1], xlab = "Experiment #3" , main = "Histogrom of the 8 th. x-coordinate")
+hist(obs[, 191 ], xlab = "Experiment #8",  main = NULL)
+```
+
 
