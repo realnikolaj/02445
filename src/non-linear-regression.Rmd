@@ -1,0 +1,130 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library("e1071")
+library(plotly)
+library(data.table)
+library(multipol)
+library(class) # For knn
+load("armdata.RData")
+load("armDF.Rdata")
+head(df)
+# e2 = lapply(armdata[[2]][], data.frame)
+# array(data = NA,dim = c(10,10,100,3))
+```
+**Getting coeffecients "fingerprint" of trajectory**
+```{r}
+Names = list(c("person1","person2","person3","person4","person5","person6","person7","person8","person9","person10"),
+             c("repetition1","repetition2","repetition3","repetition4","repetition5","repetition6","repetition7","repetition8","repetition9","repetition10"),
+             c("coef1","coef2","coef3","coef4","coef5","coef6","coef7","coef8","coef9","coef10"))
+
+data <- array(data = NA,
+              dim = c(10,10,16),
+              dimnames = Names)
+for (i in 1:10){ # 10 persons
+  for (j in 1:10){ # 10 repetitions
+    model = lm(armdata[[2]][[i]][[j]][,3] ~ poly(armdata[[2]][[i]][[j]][,2],1) * poly(armdata[[2]][[i]][[j]][,2], degree = 3 ))
+    
+    data[i,j,] = unname(coef(model)[1:10])
+    
+    
+  } 
+# print(mean(data[i,j,]))
+}
+# confint(model)
+```
+
+```{r}
+test = subset(df, experiment == 2)
+head(test)
+model = lm(y ~ c(poly(), poly(), poly()))
+summary(model)
+```
+
+```{r}
+p = 1 # person to plot
+c = 6 # coef to plot
+
+for (i in 1:10){
+  boxplot(data[i,,])
+}
+```
+
+***PCA**
+```{r}
+# 
+Names = list(rep(c("person1","person2","person3","person4","person5","person6","person7","person8","person9","person10"),10),
+             c("coef1","coef2","coef3","coef4","coef5","coef6","coef7","coef8","coef9","coef10","coef11","coef12","coef13","coef14","coef15","coef16"))
+data = array(data, dim=c(100,16), dimnames = Names)
+pcadata = prcomp(data, center = TRUE, scale. = TRUE)
+summary(pcadata)
+str(pcadata)
+```
+
+```{r}
+# ggbiplot(pcadata)
+
+```
+
+```{r}
+head(df)
+dim(subset(df, experiment ==2))
+```
+
+***KNN Algorithm***
+```{r}
+set.seed(52)
+obs = matrix(data = NA, nrow=100, ncol=300)
+df_ = subset(df, experiment == 2)[,c(2,3,4,5,6)]
+test = array(df_[,c(3,4,5)], dim=c(100,300))
+for (i in 0:99){
+  obs[i+1,] = c(df_[ ((i*100)+1) : ((i*100)+100), 3] ,
+              df_[ ((i*100)+1) : ((i*100)+100), 4] ,
+              df_[ ((i*100)+1) : ((i*100)+100), 5])
+}
+
+n = 100
+targets = c( rep(1,10) , rep(2,10) , rep(3,10) , rep(4,10) , rep(5,10) , rep(6,10) , rep(7,10) , rep(8,10) , rep(9,10) , rep(10,10)) 
+class = rep(NA, n)
+
+for (j in 1:100) {
+  # Labels
+  target_ = targets[-j]
+  # Train/test
+  train = obs[-j,]
+  test = obs[j,]
+  #Predict
+  class[j] <- knn(train,test,cl=target_, k=2)
+  
+  # errors[j] = pr != test_
+
+}
+class
+sum(class == targets)
+```
+```{r}
+df_[1:2,]
+```
+
+
+```{r}
+
+model1 = lm(x+y+z ~ experiment, data = df)
+model2 = lm((x+y+z) ~ experiment, data = df)
+
+
+plot(residuals(model1))
+plot(residuals(model2))
+# for (i in 0:9){
+#   y[i+1] = c(y, df_[ ((i*100)+1) : ((i*100)+100), 5])
+# }
+
+
+# plot(1:1000,y)
+# plot(q,noisy.y,col='deepskyblue4',xlab='q',main='Observed data')
+# lines(q,y,col='firebrick1',lwd=3)
+summary(model1)
+```

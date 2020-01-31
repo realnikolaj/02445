@@ -1,0 +1,123 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library("Hotelling")
+library("MVN")
+library(rlist)
+load("obs.RData")
+```
+***PCA***
+```{r}
+# PCA = prcomp(obs[1:100,], center = TRUE, scale = TRUE, retx = TRUE)
+PCA = prcomp(obs)
+Mrot = PCA$rotation
+dim(Mrot)
+rotx = PCA$x
+dim(rotx)
+varEx = PCA$sdev
+cs = cumsum(varEx/sum(varEx))
+idx = length(cs[1:cs > 0.95])
+
+idx = 9
+cs[idx]
+```
+#Find out how many variables are univariatenormal out of the 300
+```{r}
+good <- matrix(data=NA,nrow=16,ncol=300)
+for(j in 1:16){
+temp <- mvn(data=obs[((100*(j-1))+1):(100*j),],mvnTest = "hz")
+temp1 <- temp$univariateNormality$Normality
+
+temp2 <- rep(0,300)
+for(i in 1:length(temp1)){
+  if(temp1[i] == "   YES   "){
+    temp2[i] = 1
+  }
+}
+good[j,] <- temp2
+}
+good2 <- rep(0,300)
+
+for(i in 1:300){
+if(mean(good[,i])==1){good2[i]=1}
+}
+sum(good2)
+```
+
+#Plot
+```{r}
+plot(cs[1:50],ylab="Variance Explained",xlab="Principle componets",main="Cumulative Variance Explained", )
+abline(v = idx, h = 0.82)
+
+```
+#Projection
+```{r}
+mean_obs <- matrix(data=NA,nrow = 160,ncol = 300)
+for(i in 0:15){ #experiment
+  for(j in 1:10){ #person
+     mean_obs[i*10+j,] <- colMeans(obs[(1+10*(j-1)+100*i):(10*(j)+100*(i)),]) 
+  }
+}
+
+prj_mean_obs <- (mean_obs %*% Mrot)[,1:idx]
+```
+
+***Hotelling's two-sampled t-squared test for comparing difference in multivaraite means***
+```{r}
+t2 = hotelling.test(prj_mean_obs[1:10,], prj_mean_obs[131:140,])
+# t2 = hotelling.test(obs[1:100,idx], obs[401:500,idx])
+#t2$stats
+t2$pval
+```
+***All tests***
+```{r}
+
+pArr = list()
+
+for(i in 1:16){
+  for(j in 1:16){
+    if(i==j){
+      pArr <- list.append(pArr,0)
+    }
+    else{
+    t2 = hotelling.test(prj_mean_obs[(1+((i-1)*10)):((i)*10),], 
+                        prj_mean_obs[(1+((j-1)*10)):((j)*10),])
+    pArr <- list.append(pArr,t2$pval)
+    }
+  }
+}
+
+pArr <- unlist(pArr)
+pArr <- matrix(pArr,nrow=16,byrow = T)
+
+unsignificant <- pArr > 0.05
+which(unsignificant,arr.ind = T)
+```
+```{r}
+multivar <- mvn(data=obs[1:100,],mvnTest = "dh") #hz,royston,dh,energy
+multivar$univariateNormality
+```
+
+```{r}
+par(mfrow=c(1,2))
+result <- mvn(obs[1:100, c(8,10)], mvnTest = "hz", multivariatePlot = "contour")
+
+result <- mvn(obs[1:100, c(1,101)], mvnTest = "hz", multivariatePlot = "contour")
+```
+
+```{r}
+par(mfrow=c(2,1))
+hist(obs[201:300, 144], xlab = "Experiment #3" , main = "Histogrom of the 8 th. x-coordinate")
+hist(obs[701:800, 144 ], xlab = "Experiment #8",  main = NULL)
+```
+```{r}
+par(mfrow=c(2,1))
+hist(obs[, 1], xlab = "Experiment #3" , main = "Histogrom of the 8 th. x-coordinate")
+hist(obs[, 191 ], xlab = "Experiment #8",  main = NULL)
+```
+
+
