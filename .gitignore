@@ -4,6 +4,7 @@
 !/img/
 !/misc/
 !/tex/
+src/.ipynb_checkpoints/
 
 !*.Rdata
 !*.pdf
@@ -16,5 +17,5 @@
 !*.Rmd
 !*.md
 !.gitignore
-*.npy
+!*.npy
 
